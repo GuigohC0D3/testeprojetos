@@ -1,8 +1,27 @@
 
+document.getElementById('cancelDelete').addEventListener('click', hidePopover);
+document.getElementById('refreshBooks').addEventListener('click', clearAndReloadBooks);
+
+function hidePopover() {
+    const popover = document.getElementById('addBooks');
+    if (popover) {
+        popover.style.display = 'none';
+    } else {
+        console.error('Popover element not found');
+    }
+}
+
+function clearAndReloadBooks() {
+    const tableBody = document.getElementById("booksTableBody");
+    tableBody.innerHTML = ""; // Apaga o conteúdo da tabela
+    getBooks(); // Recarrega os dados
+}
+
+
 async function addBook() {
     const title = document.getElementById('title').value;
-    const publication_year = document.getElementById('publication_year').value;
-    const author_id = document.getElementById('author_id').value;
+    const publicationYear = document.getElementById('publication_year').value;
+    const authorId = document.getElementById('author_id').value;
     const genre = document.getElementById('genre').value;
 
     // Desabilita o botão para evitar múltiplos envios
@@ -12,14 +31,19 @@ async function addBook() {
     try {
         const response = await fetch('http://localhost:5000/books', {
             method: 'POST',
-            mode: 'no-cors',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ title: title, publication_year: publication_year, author_id: author_id, genre: genre })
+            body: JSON.stringify({
+                title: title,
+                author_id: authorId,
+                publication_year: publicationYear,
+                genre: genre
+            })
         });
 
         if (response.ok) {
+            clearAndReloadBooks(); // Recarrega os livros após adicionar
             hidePopover(); // Fecha o popover
         } else {
             console.error('Erro ao adicionar livro.');
@@ -36,8 +60,37 @@ async function addBook() {
     }
 }
 
+async function deleteBook() {
+    // Desabilita o botão para evitar múltiplos envios
+    const deleteButton = document.getElementById('delete');
 
+    try {
+        const response = await fetch('http://localhost:5000/members', {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ id: book_id })
+        });
 
+        if (response.ok) {
+            const res = await response.json();
+            console.log(res);
+            alert('Livro deletado com sucesso'); // Exibe uma mensagem de sucesso
+            clearAndReloadMembers(); // Recarrega os membros após deletar
+            hidePopover(); // Fecha o popover
+            return true
+        } else {
+            console.error('Erro ao deletar livro.');
+        }
+    } catch (error) {
+        console.error('Erro ao deletar livro:', error);
+    } finally {
+        // Reabilita o botão e limpa o formulário
+        document.getElementById('book_id').value = '';
+    }
+    return false
+}
 async function getBooks() {
     const url = "http://localhost:5000/books";
     try {
@@ -71,7 +124,18 @@ async function getBooks() {
   
             const genreCell = document.createElement("td");
             genreCell.textContent = book.genre;
-  
+
+            const actionCell = document.createElement("td");
+
+             // Botão para deletar que abre o popover
+             const deleteButton = document.createElement("button");
+             deleteButton.setAttribute('popovertarget', 'deleteMembersPopover')
+             deleteButton.textContent = "Deletar";
+             deleteButton.addEventListener('click', () => {
+                 openDeletePopover(member[0]); // Certifique-se que `member[0]` tem o ID
+             });
+ 
+            actionCell.appendChild(deleteButton);
             row.appendChild(idCell);
             row.appendChild(titleCell);
             row.appendChild(authorCell);

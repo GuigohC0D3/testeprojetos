@@ -31,7 +31,7 @@ def get_books():
         return jsonify({'error': 'Erro ao conectar ao banco de dados'}), 500
     
 
-def add_book(title, author_id, publication_year, genre):
+def addBook(title, author_id, publication_year, genre):
     conn = connect_db()  # Conectar ao banco de dados
     if conn:
         try:
@@ -41,14 +41,15 @@ def add_book(title, author_id, publication_year, genre):
                 VALUES (%s, %s, %s, %s);
             """, (title, author_id, publication_year, genre))
             conn.commit()  # Confirma a transação
-            print("Livro adicionado com sucesso!")
-        except psycopg2.Error as e:
-            print(f"Erro ao adicionar o livro: {e}")
-        finally:
             cur.close()  # Fechar o cursor
             conn.close()  # Fechar a conexão
+            return jsonify({'data': 'Livro adicionado com sucesso!', 'status': 201})
+        except psycopg2.Error as e:
+            print(f"Erro ao adicionar Livro: {e}")
+            return jsonify({'data': f"Erro ao adicionar Livro: {str(e)}", 'status': 500})
     else:
-        print("Não foi possível conectar ao banco de dados.")
+        return jsonify({'data': 'Erro ao conectar ao banco de dados', 'status': 500})
+
 
 
 def delete_book(book_id):

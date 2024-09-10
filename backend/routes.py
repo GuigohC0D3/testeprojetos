@@ -75,10 +75,16 @@ def addBook():
     data = request.json
     if 'title' not in data:
         return jsonify({'data': 'Precisa de um título', 'status': 500})
-    if 'author' not in data:
-        return jsonify({'data': 'Precisa de um autor', 'status': 500})
-    return books.addBook(data['title'], data['author'])
+    if 'author_id' not in data:
+        return jsonify({'data': 'Precisa de um ano de publicação', 'status': 500})
+    if 'publication_year' not in data:
+        return jsonify({'data': 'Precisa de um ID do autor', 'status': 500})
+    if 'genre' not in data:
+        return jsonify({'data': 'Precisa de um gênero', 'status': 500})
+    
+    return books.addBook(data['title'], data['author_id'], data['publication_year'], data['genre'])
 
+    
 @main_bp.route('/books', methods=['DELETE'])
 @cross_origin()
 def deleteBook():

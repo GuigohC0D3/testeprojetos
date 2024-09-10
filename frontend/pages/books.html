@@ -69,6 +69,7 @@
                 <th>ID do Autor</th>
                 <th>Ano de Publicação</th>
                 <th>Gênero</th>
+                <th>Ações</th>
             </tr>
         </thead>
         <tbody id="booksTableBody">
@@ -89,8 +90,14 @@
         <input type="text" id="genre" name="genre">
         </form>
         <button type="submit" id="save" onclick="addBook()">Salvar</button>
-        <button type="cancel" id="reset" onclick="closeEditModal()">Cancelar</button>
+        <button type="cancel" id="cancelDelete" onclick="closeEditModal()">Cancelar</button>
     </div>
-    <script src="../js/books.js"></script>  
+
+    <div popover id="deleteBooksPopover" style="position: fixed; padding: 10px; height: fit-content; width: fit-content;"></div>
+        <p id="popoverDeleteMsg"></p>
+        <button type="button" id="popoverDeleteBtn">Deletar</button>
+        <button type="button" id="cancelDelete" onclick="closeEditModal()">Cancelar</button>
+    </div>
+    <script src="../js/books.js"></script>
 </body>
 </html>
