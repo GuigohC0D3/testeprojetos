@@ -3,18 +3,59 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./css/main.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=SUSE:wght@100..800&display=swap" rel="stylesheet">
     <title>Document</title>
 </head>
 <body>
-    <h1>Users</h1>
-    <ul class="userList">
-    </ul>
-    <h1>Lista de Usuários</h1>
-    <ul>
-        <li>Guilherme teste</li>
-    </ul>
-    <ul class="get_members">
-    </ul>
+    <h1>Lista de Membros</h1>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Nome</th>
+                <th>Idade</th>
+            </tr>
+        </thead>
+        <tbody id="membersTableBody">
+            <!-- Os membros serão inseridos aqui -->
+        </tbody>
+    </table>
+    <button id="refreshMembers">Atualizar Membros</button>
+
+    <h1>Lista de Livros</h1>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Título</th>
+                <th>ID do Autor</th>
+                <th>Ano de Publicação</th>
+                <th>Gênero</th>
+            </tr>
+        </thead>
+        <tbody id="booksTableBody">
+            <!-- Os livros serão inseridos aqui -->
+        </tbody>
+    </table>
+    <button id="refreshBooks">Atualizar Livros</button>
+
+    <h1>Lista de Funcionários</h1>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nome</th>
+                <th>Email</th>
+            </tr>
+        </thead>
+        <tbody id="employeesTableBody">
+            <!-- Os funcionários serão inseridos aqui -->
+        </tbody>
+    </table>
+    <button id="refreshEmployees">Atualizar Funcionários</button>
+
     <script src="./js/main.js"></script>
 </body>
 </html>

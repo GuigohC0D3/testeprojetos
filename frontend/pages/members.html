@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/frontend/css/main.css">
+    <title>Document</title>
+</head>
+<body>
+    <div class="wrapper">
+        <svg>
+            <text x="50%" y="50%" dy=".35em" text-anchor="middle">
+                Lista de membros Nazaria Biblioteca
+            </text>
+        </svg>
+    </div>
+    <div id="search">
+	<svg viewBox="0 0 420 60" xmlns="http://www.w3.org/2000/svg">
+		<rect class="bar"/>
+		
+		<g class="magnifier">
+			<circle class="glass"/>
+			<line class="handle" x1="32" y1="32" x2="44" y2="44"></line>
+		</g>
+
+		<g class="sparks">
+			<circle class="spark"/>
+			<circle class="spark"/>
+			<circle class="spark"/>
+		</g>
+
+		<g class="burst pattern-one">
+			<circle class="particle circle"/>
+			<path class="particle triangle"/>
+			<circle class="particle circle"/>
+			<path class="particle plus"/>
+			<rect class="particle rect"/>
+			<path class="particle triangle"/>
+		</g>
+		<g class="burst pattern-two">
+			<path class="particle plus"/>
+			<circle class="particle circle"/>
+			<path class="particle triangle"/>
+			<rect class="particle rect"/>
+			<circle class="particle circle"/>
+			<path class="particle plus"/>
+		</g>
+		<g class="burst pattern-three">
+			<circle class="particle circle"/>
+			<rect class="particle rect"/>
+			<path class="particle plus"/>
+			<path class="particle triangle"/>
+			<rect class="particle rect"/>
+			<path class="particle plus"/>
+		</g>
+	</svg>
+	<input type=search name=q aria-label="Search for inspiration"/>
+</div>
+
+<div id="results">
+	
+</div>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Nome</th>
+                <th>Email</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody id="membersTableBody">
+            <!-- Os membros serão inseridos aqui -->
+        </tbody>
+    </table>
+
+    <!--Adicionar membros-->
+    <div popover id="addMembers">
+        <label for="nome">Nome:</label>
+        <input type="text" id="nome" name="nome"><br><br>
+        <label for="email">Email:</label>
+        <input type="text" id="email" name="email"><br><br>
+        <button type="submit" id="save" onclick="addMember()">Salvar</button>
+        <button type="cancel" id="reset" onclick="closeEditModal()">Cancelar</button>
+    </div>
+
+    <!-- Popover para deletar membros -->
+    <div popover id="deleteMembersPopover" style="position: fixed; padding: 10px; height: fit-content; width: fit-content;">
+        <p id="popoverDeleteMsg"></p>
+        <button type="button" id="popoverDeleteBtn">Deletar</button>
+        <button type="button" id="cancelDelete" onclick="closeEditModal()">Cancelar</button>
+    </div>
+
+    <button id="refreshMembers">Atualizar Membros</button>
+    <button popovertarget="addMembers">Adicionar membros</button>   
+    <script src="../js/members.js"></script>
+
+    <!-- Modal para editar membros -->
+<div id="editMemberModal" style="display:none;">
+    <h3>Editar Membro</h3>  
+    <input type="text" readonly id="editMemberId">
+    <label for="editName">Nome:</label>
+    <input type="text" id="editName"><br>
+    <label for="editEmail">Email:</label>
+    <input type="email" id="editEmail"><br>
+    <button onclick="saveUpdatedMember()">Salvar Alterações</button>
+    <button onclick="closeEditModal()">Cancelar</button>
+</div>
+</body> 
+</html>
