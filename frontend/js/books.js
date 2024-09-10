@@ -2,19 +2,37 @@
 document.getElementById('cancelDelete').addEventListener('click', hidePopover);
 document.getElementById('refreshBooks').addEventListener('click', clearAndReloadBooks);
 
-function hidePopover() {
-    const popover = document.getElementById('addBooks');
-    if (popover) {
-        popover.style.display = 'none';
-    } else {
-        console.error('Popover element not found');
-    }
-}
 
 function clearAndReloadBooks() {
     const tableBody = document.getElementById("booksTableBody");
     tableBody.innerHTML = ""; // Apaga o conteúdo da tabela
     getBooks(); // Recarrega os dados
+}
+
+function hidePopover() {
+    // Seleciona o popover de deletar e o esconde
+    const deletePopover = document.getElementById('deleteBooksPopover');
+    deletePopover.style.display = 'none';
+}
+
+function clearAndReloadBooks() {
+    // Limpa e recarrega a tabela de livros
+    const booksTableBody = document.getElementById('booksTableBody');
+    booksTableBody.innerHTML = ''; // Limpa os livros existentes
+
+    // Aqui você deve chamar a função que puxa os livros da API e os renderiza novamente
+    getBooks(); // Função que busca a lista de livros do servidor
+}
+
+function showDeletePopover(book_id) {
+    const deletePopover = document.getElementById('deleteBooksPopover');
+    const popoverDeleteMsg = document.getElementById('popoverDeleteMsg');
+    const popoverDeleteBtn = document.getElementById('popoverDeleteBtn');
+
+    popoverDeleteMsg.textContent = `Tem certeza de que deseja deletar o livro com ID ${book_id}?`;
+    popoverDeleteBtn.setAttribute('onclick', `deleteBook(${book_id})`);
+    
+    deletePopover.style.display = 'block'; // Mostra o popover
 }
 
 
@@ -60,12 +78,11 @@ async function addBook() {
     }
 }
 
-async function deleteBook() {
-    // Desabilita o botão para evitar múltiplos envios
+async function deleteBook(book_id) {
     const deleteButton = document.getElementById('delete');
 
     try {
-        const response = await fetch('http://localhost:5000/members', {
+        const response = await fetch('http://localhost:5000/books', {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json'
@@ -77,20 +94,54 @@ async function deleteBook() {
             const res = await response.json();
             console.log(res);
             alert('Livro deletado com sucesso'); // Exibe uma mensagem de sucesso
-            clearAndReloadMembers(); // Recarrega os membros após deletar
+            clearAndReloadBooks(); // Recarrega os livros após deletar
             hidePopover(); // Fecha o popover
-            return true
+            return true;
         } else {
             console.error('Erro ao deletar livro.');
         }
     } catch (error) {
         console.error('Erro ao deletar livro:', error);
     } finally {
-        // Reabilita o botão e limpa o formulário
         document.getElementById('book_id').value = '';
     }
-    return false
+    return false;
 }
+
+async function fetchBooks() {
+    try {
+        const response = await fetch('http://localhost:5000/books');
+        if (response.ok) {
+            const books = await response.json();
+            const booksTableBody = document.getElementById('booksTableBody');
+            booksTableBody.innerHTML = ''; // Limpa a tabela antes de adicionar novos dados
+
+            books.forEach(book => {
+                const row = document.createElement('tr');
+                
+                row.innerHTML = `
+                    <td>${book.id}</td>
+                    <td>${book.title}</td>
+                    <td>${book.author_id}</td>
+                    <td>${book.publication_year}</td>
+                    <td>${book.genre}</td>
+                    <td>
+                        <button onclick="showDeletePopover(${book.id})">Deletar</button>
+                        <!-- Outros botões de ação, se necessário -->
+                    </td>
+                `;
+                
+                booksTableBody.appendChild(row);
+            });
+        } else {
+            console.error('Erro ao buscar livros.');
+        }
+    } catch (error) {
+        console.error('Erro ao buscar livros:', error);
+    }
+}
+
+
 async function getBooks() {
     const url = "http://localhost:5000/books";
     try {
@@ -129,10 +180,10 @@ async function getBooks() {
 
              // Botão para deletar que abre o popover
              const deleteButton = document.createElement("button");
-             deleteButton.setAttribute('popovertarget', 'deleteMembersPopover')
+             deleteButton.setAttribute('popovertarget', 'deleteBooksPopover')
              deleteButton.textContent = "Deletar";
              deleteButton.addEventListener('click', () => {
-                 openDeletePopover(member[0]); // Certifique-se que `member[0]` tem o ID
+                 openDeletePopover(book[0]); // Certifique-se que `book_id[0]` tem o ID
              });
  
             actionCell.appendChild(deleteButton);

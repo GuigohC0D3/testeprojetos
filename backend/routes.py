@@ -92,13 +92,15 @@ def deleteBook():
         data = request.json
         if 'id' not in data:
             return jsonify({'data': 'Precisa de um id', 'status': 500})
+        # Supondo que você tenha uma função books.deleteBook que deleta pelo ID
         result = books.deleteBook(data['id'])
-        if result:
+        if result:  # Se o livro foi deletado com sucesso
             return jsonify({'data': 'Livro deletado com sucesso', 'status': 200})
-        else:
+        else:  # Se o ID não foi encontrado
             return jsonify({'data': 'Livro não encontrado', 'status': 404})
     except Exception as e:
         return jsonify({'data': f'Erro ao deletar livro: {str(e)}', 'status': 500})
+
 
 @main_bp.route('/books', methods=['PUT'])
 def updateBook():
