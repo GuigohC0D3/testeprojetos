@@ -61,7 +61,8 @@
 </div>
 
 <div id="results">
-    <table border="1">
+     <!-- Tabela de livros -->
+     <table border="1">
         <thead>
             <tr>
                 <th>ID</th>
@@ -73,32 +74,52 @@
             </tr>
         </thead>
         <tbody id="booksTableBody">
-            <!-- Os livros serão inseridos aqui -->
+            <!-- Os livros serão inseridos aqui dinamicamente -->
         </tbody>
     </table>
-    <button popovertarget="addBooks">Adicionar livros</button>  
+
+    <!-- Botões -->
     <button id="refreshBooks">Atualizar Livros</button>
-    <div popover id="addBooks">
-        <form>
-        <label for="title">Título do Livro:</label>
+    <button popovertarget="addBook">Adicionar Livro</button>
+
+    <!-- Formulário para adicionar livro -->
+    <div popover id="addBook">
+        <h3>Adicionar Novo Livro</h3>
+        <label for="title">Título:</label>
         <input type="text" id="title" name="title"><br><br>
-        <label for="publication_year">Ano de publicação:</label>
-        <input type="text" id="publication_year" name="publication_year"><br><br>
-        <label for="author_id">IdAutor:</label>
-        <input type="text" id="author_id" name="author_id">
-        <label for="genero">Gênero:</label>
-        <input type="text" id="genre" name="genre">
-        </form>
+        <label for="author_id">ID do Autor:</label>
+        <input type="number" id="author_id" name="author_id"><br><br>
+        <label for="publication_year">Ano de Publicação:</label>
+        <input type="number" id="publication_year" name="publication_year"><br><br>
+        <label for="genre">Gênero:</label>
+        <input type="text" id="genre" name="genre"><br><br>
         <button type="submit" id="save" onclick="addBook()">Salvar</button>
-        <button type="cancel" id="cancelDelete" onclick="closeEditModal()">Cancelar</button>
+        <button type="cancel" id="reset" onclick="closeBookModal()">Cancelar</button>
     </div>
 
-<!-- Popover para deletar livros -->
-<div popover id="deleteBooksPopover" style="position: fixed; padding: 10px; height: fit-content; width: fit-content;">
-    <p id="popoverDeleteMsg"></p>
-    <button type="button" id="popoverDeleteBtn" onclick="deleteBook(book_id)">Deletar</button>
-    <button type="button" id="cancelDelete" onclick="closeEditModal()">Cancelar</button>
-</div>
+    <!-- Modal para editar livro -->
+    <div id="editBookModal" style="display:none;">
+        <h3>Editar Livro</h3>
+        <input type="hidden" id="editBookId">
+        <label for="editTitle">Título:</label>
+        <input type="text" id="editTitle"><br><br>
+        <label for="editAuthorId">ID do Autor:</label>
+        <input type="number" id="editAuthorId"><br><br>
+        <label for="editPublicationYear">Ano de Publicação:</label>
+        <input type="number" id="editPublicationYear"><br><br>
+        <label for="editGenre">Gênero:</label>
+        <input type="text" id="editGenre"><br><br>
+        <button onclick="saveUpdatedBook()">Salvar Alterações</button>
+        <button onclick="closeBookModal()">Cancelar</button>
+    </div>
+
+    <!-- Popover para deletar livros -->
+    <div popover id="deleteBookPopover" style="position: fixed; padding: 10px; height: fit-content; width: fit-content;">
+        <p id="popoverDeleteMsg"></p>
+        <button type="button" id="popoverDeleteBtn">Deletar</button>
+        <button type="button" id="cancelDelete" onclick="closeBookModal()">Cancelar</button>
+    </div>
+
     <script src="../js/books.js"></script>
 </body>
 </html>
