@@ -5,26 +5,34 @@
     font-family: 'SUSE', sans-serif;
 }
 
+
 table {
     width: 100%;
     background-color: #FFFFFF;
     border-collapse: collapse;
-    border-width: 2px;
+    border-width: 1.3px;
     border-color: #7EA8F8;
     border-style: solid;
     color: #000000; 
     margin-top: 2%;
+	justify-content: center;
+	align-items: center;
    }
 
-   
-
  td, th {
-    border: 1px solid;
-    border-radius: 5px; 
+    border: 1px solid;		 
     border-width: 2px;
-    border-color: #7EA8F8;
+    border-color: #9c3f3fd8;
     border-style: solid;
-    padding: 5px;
+	text-align: center; 
+    vertical-align: middle; 
+    padding: 10px; 
+    border: 1px solid red; 
+ }
+
+ td {
+	justify-content: center;
+	align-items: center;
  }
 
  h1 {
@@ -63,6 +71,7 @@ table {
     color: #DEDEDE !important;
     background: #32A7C4;
  }
+ 
 
  #addBooks {
     position: fixed;
@@ -81,6 +90,15 @@ table {
     -webkit-backdrop-filter: blur( 10px );
     border-radius: 10px;
     border: 1px solid rgba( 255, 255, 255, 0.18 );
+}
+
+#editBookModal {
+	position: fixed;
+	left: 50%;
+	top: 50%;
+	transform: translate(-50%, -50%);
+	background-color: #16CADE;
+	border: 3px solid;
 }
 
  @import url("https://fonts.googleapis.com/css2?family=Russo+One&display=swap");
@@ -326,4 +344,60 @@ body {
 #results {
 	grid-area: results;
 	background: hsl(0, 0%, 95%);
+}
+
+
+
+/* Centralizando o modal na tela */
+#editBookModal {
+    background-color: white; /* Fundo do modal */
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    max-width: 400px; /* Largura máxima */
+    width: 100%;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    z-index: 1000; /* Garantir que ele ficará sobre os outros elementos */
+}
+
+#editBookModal h3 {
+    text-align: center; /* Centraliza o título */
+    margin-bottom: 20px;
+}
+
+#editBookModal label {
+    align-self: flex-start;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+#editBookModal input {
+    width: 100%; /* Faz os inputs ocuparem toda a largura */
+    padding: 8px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+#editBookModal button {
+    width: 100%;
+    padding: 10px;
+    background-color: #00bcd4;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    margin-bottom: 10px; /* Espaçamento entre os botões */
+}
+
+#editBookModal button:hover {
+    background-color: #0097a7;
 }

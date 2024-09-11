@@ -52,7 +52,7 @@ def addBook(title, author_id, publication_year, genre):
 
 
 
-def delete_book(book_id):
+def deleteBook(book_id):
     conn = connect_db()
     if conn:
         try:
@@ -69,42 +69,36 @@ def delete_book(book_id):
         print("Não foi possível conectar ao banco de dados.")
 
 
-def update_book(book_id, title=None, author_id=None, publication_year=None, genre=None):
+def update_book_in_db(book_id, title=None, author_id=None, publication_year=None, genre=None):
     conn = connect_db()
     if conn:
         try:
             cur = conn.cursor()
-            fields = []
-            values = []
-            
-            if title:
-                fields.append("title = %s")
-                values.append(title)
-            if book_id:
-                fields.append("book_id = %s")
-                values.append(book_id)
-            if author_id:
-                fields.append("author_id = %s")
-                values.append(author_id)
-            if publication_year:
-                fields.append("publication_year = %s")
-                values.append(publication_year)
-            if genre:
-                fields.append("genre = %s")
-                values.append(genre)
-            
-            values.append(book_id)
-            query = f"UPDATE Bibliotecas SET {', '.join(fields)} WHERE book_id = %s;"
-            cur.execute(query, values)
-            conn.commit()
-            print("Informações do livro atualizadas com sucesso!")
+
+            # Adicionando logs para verificar se os dados estão corretos
+            print(f"Atualizando livro com ID {book_id}:")
+            print(f"Título: {title}, Autor: {author_id}, Ano: {publication_year}, Gênero: {genre}")
+
+            # Query de atualização no PostgreSQL
+            cur.execute("""
+                UPDATE Bibliotecas 
+                SET title = %s, author_id = %s, publication_year = %s, genre = %s
+                WHERE book_id = %s;
+            """, (title, author_id, publication_year, genre, book_id))
+
+            conn.commit()  # Verifique se o commit está sendo chamado
+            print(f"Livro com ID {book_id} atualizado com sucesso.")
+            return True
         except psycopg2.Error as e:
             print(f"Erro ao atualizar o livro: {e}")
+            return False
         finally:
             cur.close()
             conn.close()
     else:
-        print("Não foi possível conectar ao banco de dados.")
+        print("Erro ao conectar ao banco de dados.")
+        return False
+
 
 
 def search_book(search_term, search_type):

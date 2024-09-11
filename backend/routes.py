@@ -107,6 +107,8 @@ def deleteBook():
 def updateBook():
     try:
         data = request.json
+        print(f"Dados recebidos para atualização: {data}")
+
         if 'book_id' not in data:
             return jsonify({'data': 'Precisa de um ID do livro', 'status': 500})
         if 'title' not in data:
@@ -114,16 +116,26 @@ def updateBook():
         if 'author_id' not in data:
             return jsonify({'data': 'Precisa de um ID do autor', 'status': 500})
         if 'publication_year' not in data:
-            return jsonify({'data': 'Precisa de um ano de publicação', 'status': 500})
+            return jsonify({'data': 'Precisa do ano de publicação', 'status': 500})
         if 'genre' not in data:
             return jsonify({'data': 'Precisa de um gênero', 'status': 500})
 
-        result = books.updateBook(data['book_id'], data['title'], data['author_id'], data['publication_year'], data['genre'])
-        if result:
+        # Atualize o livro no banco de dados
+        result = books.update_book_in_db(
+            data['book_id'], 
+            data['title'], 
+            data['author_id'], 
+            data['publication_year'], 
+            data['genre']
+        )
+
+        if result:  # Se o livro foi atualizado com sucesso
             return jsonify({'message': 'Livro atualizado com sucesso!'}), 200
         else:
-            return jsonify({'error': 'Erro ao atualizar livro'}), 500
+            return jsonify({'error': 'Erro ao atualizar livro no banco de dados'}), 500
+
     except Exception as e:
+        print(f"Erro no servidor ao atualizar o livro: {str(e)}")
         return jsonify({'data': f'Erro ao atualizar livro: {str(e)}', 'status': 500})
 
 # Paginação de livros

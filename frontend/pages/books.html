@@ -10,116 +10,117 @@
     <title>Document</title>
 </head>
 <body>
-    <div class="wrapper"></div>
+    <div class="wrapper">
         <svg>
             <text x="50%" y="50%" dy=".35em" text-anchor="middle">
                 Lista de livros Nazaria Biblioteca
             </text>
         </svg>
     </div>
+
     <div id="search">
-	<svg viewBox="0 0 420 60" xmlns="http://www.w3.org/2000/svg">
-		<rect class="bar"/>
-		
-		<g class="magnifier">
-			<circle class="glass"/>
-			<line class="handle" x1="32" y1="32" x2="44" y2="44"></line>
-		</g>
+        <svg viewBox="0 0 420 60" xmlns="http://www.w3.org/2000/svg">
+            <rect class="bar"/>
 
-		<g class="sparks">
-			<circle class="spark"/>
-			<circle class="spark"/>
-			<circle class="spark"/>
-		</g>
+            <g class="magnifier">
+                <circle class="glass"/>
+                <line class="handle" x1="32" y1="32" x2="44" y2="44"></line>
+            </g>
 
-		<g class="burst pattern-one">
-			<circle class="particle circle"/>
-			<path class="particle triangle"/>
-			<circle class="particle circle"/>
-			<path class="particle plus"/>
-			<rect class="particle rect"/>
-			<path class="particle triangle"/>
-		</g>
-		<g class="burst pattern-two">
-			<path class="particle plus"/>
-			<circle class="particle circle"/>
-			<path class="particle triangle"/>
-			<rect class="particle rect"/>
-			<circle class="particle circle"/>
-			<path class="particle plus"/>
-		</g>
-		<g class="burst pattern-three">
-			<circle class="particle circle"/>
-			<rect class="particle rect"/>
-			<path class="particle plus"/>
-			<path class="particle triangle"/>
-			<rect class="particle rect"/>
-			<path class="particle plus"/>
-		</g>
-	</svg>
-	<input type=search name=q aria-label="Search for inspiration"/>
-</div>
+            <g class="sparks">
+                <circle class="spark"/>
+                <circle class="spark"/>
+                <circle class="spark"/>
+            </g>
 
-<div id="results">
-     <!-- Tabela de livros -->
-     <table border="1">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Título</th>
-                <th>ID do Autor</th>
-                <th>Ano de Publicação</th>
-                <th>Gênero</th>
-                <th>Ações</th>
-            </tr>
-        </thead>
-        <tbody id="booksTableBody">
-            <!-- Os livros serão inseridos aqui dinamicamente -->
-        </tbody>
-    </table>
-
-    <!-- Botões -->
-    <button id="refreshBooks">Atualizar Livros</button>
-    <button popovertarget="addBook">Adicionar Livro</button>
-
-    <!-- Formulário para adicionar livro -->
-    <div popover id="addBook">
-        <h3>Adicionar Novo Livro</h3>
-        <label for="title">Título:</label>
-        <input type="text" id="title" name="title"><br><br>
-        <label for="author_id">ID do Autor:</label>
-        <input type="number" id="author_id" name="author_id"><br><br>
-        <label for="publication_year">Ano de Publicação:</label>
-        <input type="number" id="publication_year" name="publication_year"><br><br>
-        <label for="genre">Gênero:</label>
-        <input type="text" id="genre" name="genre"><br><br>
-        <button type="submit" id="save" onclick="addBook()">Salvar</button>
-        <button type="cancel" id="reset" onclick="closeBookModal()">Cancelar</button>
+            <g class="burst pattern-one">
+                <circle class="particle circle"/>
+                <path class="particle triangle"/>
+                <circle class="particle circle"/>
+                <path class="particle plus"/>
+                <rect class="particle rect"/>
+                <path class="particle triangle"/>
+            </g>
+            <g class="burst pattern-two">
+                <path class="particle plus"/>
+                <circle class="particle circle"/>
+                <path class="particle triangle"/>
+                <rect class="particle rect"/>
+                <circle class="particle circle"/>
+                <path class="particle plus"/>
+            </g>
+            <g class="burst pattern-three">
+                <circle class="particle circle"/>
+                <rect class="particle rect"/>
+                <path class="particle plus"/>
+                <path class="particle triangle"/>
+                <rect class="particle rect"/>
+                <path class="particle plus"/>
+            </g>
+        </svg>
+        <input type="search" name="q" aria-label="Search for inspiration"/>
     </div>
 
-    <!-- Modal para editar livro -->
-    <div id="editBookModal" style="display:none;">
-        <h3>Editar Livro</h3>
-        <input type="hidden" id="editBookId">
-        <label for="editTitle">Título:</label>
-        <input type="text" id="editTitle"><br><br>
-        <label for="editAuthorId">ID do Autor:</label>
-        <input type="number" id="editAuthorId"><br><br>
-        <label for="editPublicationYear">Ano de Publicação:</label>
-        <input type="number" id="editPublicationYear"><br><br>
-        <label for="editGenre">Gênero:</label>
-        <input type="text" id="editGenre"><br><br>
-        <button onclick="saveUpdatedBook()">Salvar Alterações</button>
-        <button onclick="closeBookModal()">Cancelar</button>
-    </div>
+    <div id="results">
+        <!-- Tabela de livros -->
+        <table border="1">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Título</th>
+                    <th>ID do Autor</th>
+                    <th>Ano de Publicação</th>
+                    <th>Gênero</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody id="booksTableBody">
+                <!-- Os livros serão inseridos aqui dinamicamente -->
+            </tbody>
+        </table>
 
-    <!-- Popover para deletar livros -->
-    <div popover id="deleteBookPopover" style="position: fixed; padding: 10px; height: fit-content; width: fit-content;">
-        <p id="popoverDeleteMsg"></p>
-        <button type="button" id="popoverDeleteBtn">Deletar</button>
-        <button type="button" id="cancelDelete" onclick="closeBookModal()">Cancelar</button>
-    </div>
+        <!-- Botões -->
+        <button id="refreshBooks">Atualizar Livros</button>
+        <button popovertarget="addBook">Adicionar Livro</button>
 
-    <script src="../js/books.js"></script>
-</body>
+        <!-- Formulário para adicionar livro -->
+        <div popover id="addBook" style="display: none;">
+            <h3>Adicionar Novo Livro</h3>
+            <label for="title">Título:</label>
+            <input type="text" id="title" name="title"><br><br>
+            <label for="author_id">ID do Autor:</label>
+            <input type="number" id="author_id" name="author_id"><br><br>
+            <label for="publication_year">Ano de Publicação:</label>
+            <input type="number" id="publication_year" name="publication_year"><br><br>
+            <label for="genre">Gênero:</label>
+            <input type="text" id="genre" name="genre"><br><br>
+            <button type="submit" id="save" onclick="addBook()">Salvar</button>
+            <button type="cancel" id="reset" onclick="closeBookModal()">Cancelar</button>
+        </div>
+
+        <!-- Modal para editar livro -->
+        <div id="editBookModal" style="display:none;">
+            <h3>Editar Livro</h3>
+            <input type="hidden" id="editBookId">
+            <label for="editTitle">Título:</label>
+            <input type="text" id="editTitle"><br><br>
+            <label for="editAuthorId">ID do Autor:</label>
+            <input type="number" id="editAuthorId"><br><br>
+            <label for="editPublicationYear">Ano de Publicação:</label>
+            <input type="number" id="editPublicationYear"><br><br>
+            <label for="editGenre">Gênero:</label>
+            <input type="text" id="editGenre"><br><br>
+            <button onclick="saveUpdatedBook()">Salvar Alterações</button>
+            <button onclick="closeBookModal()">Cancelar</button>
+        </div>
+
+        <!-- Popover para deletar livros -->
+        <div popover id="deleteBookPopover" style="position: fixed; padding: 10px; height: fit-content; width: fit-content;">
+            <p id="popoverDeleteMsg"></p>
+            <button type="button" id="popoverDeleteBtn">Deletar</button>
+            <button type="button" id="cancelDelete" onclick="hidePopover()">Cancelar</button>
+        </div>
+
+        <script src="../js/books.js"></script>
+    </body>
 </html>

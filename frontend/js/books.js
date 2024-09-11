@@ -1,7 +1,7 @@
 document.getElementById('refreshBooks').addEventListener('click', clearAndReloadBooks);
 document.getElementById('cancelDelete').addEventListener('click', hidePopover);
 
-// Função para apagar conteúdo da tabela e recarregar a página
+//Função para apagar conteúdo da tabela e recarregar a página
 function clearAndReloadBooks() {
     const tableBody = document.getElementById("booksTableBody");
     tableBody.innerHTML = ""; // Apaga o conteúdo da tabela
@@ -19,25 +19,37 @@ function openEditModal(bookId, title, authorId, publicationYear, genre) {
 }
 
 function openDeletePopover(bookId) {
-    const popoverDelete = document.getElementById('deleteBooksPopover');
+    const popoverDelete = document.getElementById('deleteBookPopover');
     const popoverDeleteBtn = document.getElementById('popoverDeleteBtn');
     const popoverDeleteMsg = document.getElementById('popoverDeleteMsg');
+    
     popoverDeleteMsg.innerHTML = 'Deseja deletar o livro com ID: ' + bookId + "?";
 
     popoverDeleteBtn.addEventListener('click', () => {
-        deleteBook(bookId);
-        popoverDelete.style.display = 'none';
+        deleteBook(bookId); // Chama a função de deletar o livro
+        popoverDelete.style.display = 'none'; // Esconde o popover após deletar
     });
+
+    popoverDelete.style.display = 'block'; // Mostra o popover ao clicar em deletar
 }
 
-// Função para fechar o modal
-function closeEditModal() {
+// Função para fechar o modal de edição
+function closeBookModal() {
     document.getElementById('editBookModal').style.display = 'none';
-    document.getElementById('deleteBooksPopover').style.display = 'none';
-    document.getElementById('addBooks').style.display = 'none';
+    hidePopover();
 }
 
-// Função para salvar atualizações no livro
+// Função para fechar o popover de deletar livro
+function hidePopover() {
+    const popover = document.getElementById('deleteBookPopover');
+    if (popover) {
+        popover.style.display = 'none';  // Esconde o popover de exclusão
+    } else {
+        console.error('Popover element not found');
+    }
+}
+
+// Função para salvar atualizações no livro (PUT)
 async function saveUpdatedBook() {
     const bookId = document.getElementById('editBookId').value;
     const title = document.getElementById('editTitle').value;
@@ -51,21 +63,33 @@ async function saveUpdatedBook() {
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ book_id: bookId, title, author_id: authorId, publication_year: publicationYear, genre })
+            body: JSON.stringify({
+                book_id: bookId,
+                title: title,
+                author_id: authorId,
+                publication_year: publicationYear,
+                genre: genre
+            })
         });
 
+        // Verifique a resposta do backend
+        const data = await response.json();
+        console.log("Resposta do servidor após atualização:", data);
+
         if (response.ok) {
-            clearAndReloadBooks();
-            closeEditModal();
+            console.log("Livro atualizado com sucesso, recarregando tabela...");
+            clearAndReloadBooks(); // Recarrega a lista de livros após a edição
+            closeBookModal(); // Fecha o modal de edição após salvar
         } else {
-            console.error('Erro ao atualizar livro.');
+            console.error('Erro ao atualizar livro. Status:', response.status);
         }
     } catch (error) {
         console.error('Erro ao atualizar livro:', error);
     }
 }
 
-// Função para deletar livros
+
+// Função para deletar livros (DELETE)
 async function deleteBook(bookId) {
     try {
         const response = await fetch('http://localhost:5000/books', {
@@ -78,8 +102,7 @@ async function deleteBook(bookId) {
 
         if (response.ok) {
             alert('Livro deletado com sucesso');
-            clearAndReloadBooks();
-            hidePopover();
+            clearAndReloadBooks(); // Recarrega a lista de livros após deletar
         } else {
             console.error('Erro ao deletar livro.');
         }
@@ -88,7 +111,7 @@ async function deleteBook(bookId) {
     }
 }
 
-// Função para adicionar livros
+// Função para adicionar livros (POST)
 async function addBook() {
     const title = document.getElementById('title').value;
     const authorId = document.getElementById('author_id').value;
@@ -101,12 +124,17 @@ async function addBook() {
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ title: title, author_id: authorId, publication_year: publicationYear, genre: genre })
+            body: JSON.stringify({
+                title: title,
+                author_id: authorId,
+                publication_year: publicationYear,
+                genre: genre
+            })
         });
 
         if (response.ok) {
-            clearAndReloadBooks();
-            hidePopover();
+            clearAndReloadBooks(); // Recarrega a lista de livros após adicionar
+            hidePopover(); // Fecha o popover
         } else {
             console.error('Erro ao adicionar livro.');
         }
@@ -115,21 +143,25 @@ async function addBook() {
     }
 }
 
-// Função para buscar livros com paginação
-async function getBooks(page = 1, perPage = 10) {
+
+// Função para buscar livros no banco de dados (GET)
+async function getBooks() {
+    const url = "http://localhost:5000/books";
     try {
-        const response = await fetch(`http://localhost:5000/books?page=${page}&per_page=${perPage}`);
+        const response = await fetch(url);
         if (!response.ok) {
-            throw new Error(`Response status: ${response.status}`);
+            throw new Error(`Erro ao buscar livros. Status: ${response.status}`);
         }
         const json = await response.json();
-        const books = json.data;
+        const books = json.books;
+        console.log("Livros recebidos:", books);  // Verifique os dados recebidos
+
         const tableBody = document.getElementById("booksTableBody");
 
         // Limpa o conteúdo anterior
         tableBody.innerHTML = "";
 
-        // Adiciona os novos livros
+        // Adiciona os novos livros na tabela
         books.forEach(book => {
             const row = document.createElement("tr");
 
@@ -149,7 +181,7 @@ async function getBooks(page = 1, perPage = 10) {
             genreCell.textContent = book.genre;
 
             const actionCell = document.createElement("td");
-
+            
             // Botão para editar
             const editButton = document.createElement("button");
             editButton.textContent = "Editar";
@@ -157,7 +189,7 @@ async function getBooks(page = 1, perPage = 10) {
                 openEditModal(book.book_id, book.title, book.author_id, book.publication_year, book.genre);
             });
 
-            // Botão para deletar que abre o popover
+            // Botão para deletar
             const deleteButton = document.createElement("button");
             deleteButton.textContent = "Deletar";
             deleteButton.addEventListener('click', () => {
@@ -175,6 +207,7 @@ async function getBooks(page = 1, perPage = 10) {
 
             tableBody.appendChild(row);
         });
+
     } catch (error) {
         console.error('Erro ao buscar livros:', error);
     }
@@ -184,26 +217,28 @@ async function getBooks(page = 1, perPage = 10) {
 window.onload = function () {
     getBooks();
 
+    // Adiciona o evento de busca na barra de pesquisa
     const searchInput = document.querySelector('#search input[name="q"]');
     searchInput.addEventListener('input', filterBooks);
 };
 
-// Função para filtrar livros
+// Função para filtrar livros com base no input de pesquisa
 function filterBooks() {
     const searchInput = document.querySelector('#search input[name="q"]').value.toLowerCase();
     const booksTableBody = document.getElementById('booksTableBody');
     const rows = booksTableBody.getElementsByTagName('tr');
 
     for (let i = 0; i < rows.length; i++) {
-        const titleCell = rows[i].getElementsByTagName('td')[1];
-        const genreCell = rows[i].getElementsByTagName('td')[4];
+        const titleCell = rows[i].getElementsByTagName('td')[1]; // Segunda coluna (Título)
+        const genreCell = rows[i].getElementsByTagName('td')[4]; // Quinta coluna (Gênero)
         const title = titleCell.textContent.toLowerCase();
         const genre = genreCell.textContent.toLowerCase();
 
+        // Verifica se o título ou o gênero contém o termo de busca
         if (title.includes(searchInput) || genre.includes(searchInput)) {
-            rows[i].style.display = '';
+            rows[i].style.display = ''; // Mostra a linha
         } else {
-            rows[i].style.display = 'none';
+            rows[i].style.display = 'none'; // Esconde a linha
         }
     }
 }

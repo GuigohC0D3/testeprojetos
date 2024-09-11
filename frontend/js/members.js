@@ -8,6 +8,7 @@ function clearAndReloadMembers() {
     getMembers(); // Recarrega os dados
 }
 
+
 // Função para abrir o modal e preencher os campos com os dados do membro
 function openEditModal(memberId, currentName, currentEmail) {
     document.getElementById('editMemberId').value = memberId;
