@@ -111,6 +111,56 @@ async function deleteBook(bookId) {
     }
 }
 
+async function rentBook(bookId) {
+    const memberId = prompt("Digite o ID do membro que está alugando o livro:");
+    const dueDate = prompt("Digite a data de devolução (YYYY-MM-DD):");
+
+    if (!memberId || !dueDate) {
+        alert("ID do membro e data de devolução são obrigatórios.");
+        return;
+    }
+
+    try {
+        const response = await fetch('http://localhost:5000/rent_book', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ member_id: memberId, book_id: bookId, due_date: dueDate })
+        });
+
+        if (response.ok) {
+            alert("Livro alugado com sucesso!");
+            getBooks(); // Recarregar os livros para atualizar a disponibilidade
+        } else {
+            console.error('Erro ao alugar o livro.');
+        }
+    } catch (error) {
+        console.error('Erro ao alugar o livro:', error);
+    }
+}
+
+async function returnBook(rentalId) {
+    try {
+        const response = await fetch(`http://localhost:5000/return_book/${rentalId}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        });
+
+        if (response.ok) {
+            const res = await response.json();
+            alert(`Livro devolvido com sucesso! Multa: ${res.fine}`);
+            getBooks(); // Recarregar os livros para atualizar a disponibilidade
+        } else {
+            console.error('Erro ao devolver o livro.');
+        }
+    } catch (error) {
+        console.error('Erro ao devolver o livro:', error);
+    }
+}
+
 // Função para adicionar livros (POST)
 async function addBook() {
     const title = document.getElementById('title').value;

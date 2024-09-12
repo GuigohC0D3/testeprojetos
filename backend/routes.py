@@ -173,3 +173,23 @@ def getBooks():
 def get_employee():
     return employee.get_employee()
 
+# Para alugar livros
+@main_bp.route('/rent_book', methods=['POST'])
+@cross_origin()
+def rent_book_route():
+    data = request.json
+    if 'member_id' not in data:
+        return jsonify({'data': 'Precisa do ID do membro', 'status': 500})
+    if 'book_id' not in data:
+        return jsonify({'data': 'Precisa do ID do livro', 'status': 500})
+    if 'due_date' not in data:
+        return jsonify({'data': 'Precisa de uma data de devolução', 'status': 500})
+
+    return books.rent_book(data['member_id'], data['book_id'], data['due_date'])
+
+
+#Devolução de Livros
+@main_bp.route('/return_book/<int:rental_id>', methods=['PUT'])
+@cross_origin()
+def return_book_route(rental_id):
+    return books.return_book(rental_id)

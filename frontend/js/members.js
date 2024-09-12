@@ -183,7 +183,7 @@ async function getMembers() {
             deleteButton.addEventListener('click', () => {
                 openDeletePopover(member[0]); // Certifique-se que `member[0]` tem o ID
             });
-
+            
             actionCell.appendChild(deleteButton);
             actionCell.appendChild(editButton);
             row.appendChild(idCell);
