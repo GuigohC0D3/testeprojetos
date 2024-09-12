@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=SUSE:wght@100..800&display=swap" rel="stylesheet">
+    <link rel="shortcut icon" type="imagex/png" href="../img/nazariadistribuidora_logo.jpg">
+    <link rel="stylesheet" href="../css/user.css">
+    <title>Biblioteca Názaria</title>
+</head>
+<body>
+    <nav id='menu'>
+        <input type='checkbox' id='responsive-menu' onclick='updatemenu()'><label></label>
+        <ul>
+          <li><a href='http://'>Home</a></li>
+          <li><a class='dropdown-arrow' href='http://'>Livros</a>
+            <ul class='sub-menus'>
+              <li><a href='http://'>Alugar</a></li>
+              <li><a href='http://'>Devolver</a></li>
+              <li><a href='http://'>Funcionários</a></li>
+            </ul>
+          </li>
+          <li><a href='http://'>Contate-nos</a></li>
+          <li><a href='http://'>Sobre</a></li>
+          </li>
+          <li><a class='dropdown-arrow' href='http://'>Membros</a>
+            <ul class='sub-menus'>
+              <li><a href='http://'>Perfil</a></li>
+              <li><a href='http://'>Livros Alugados</a></li>
+              <li><a href='http://'>Multas</a></li>
+              <li><a href="hhtp://">Sair</a></li>
+            </ul>
+        </ul>
+      </nav>
+    <div class="wrapper">
+        <svg>
+            <text x="50%" y="50%" dy=".35em" text-anchor="middle">
+                Lista de membros Nazaria Biblioteca
+            </text>
+        </svg>
+    </div>
+    <div id="search">
+	<svg viewBox="0 0 420 60" xmlns="http://www.w3.org/2000/svg">
+		<rect class="bar"/>
+		
+		<g class="magnifier">
+			<circle class="glass"/>
+			<line class="handle" x1="32" y1="32" x2="44" y2="44"></line>
+		</g>
+
+		<g class="sparks">
+			<circle class="spark"/>
+			<circle class="spark"/>
+			<circle class="spark"/>
+		</g>
+
+		<g class="burst pattern-one">
+			<circle class="particle circle"/>
+			<path class="particle triangle"/>
+			<circle class="particle circle"/>
+			<path class="particle plus"/>
+			<rect class="particle rect"/>
+			<path class="particle triangle"/>
+		</g>
+		<g class="burst pattern-two">
+			<path class="particle plus"/>
+			<circle class="particle circle"/>
+			<path class="particle triangle"/>
+			<rect class="particle rect"/>
+			<circle class="particle circle"/>
+			<path class="particle plus"/>
+		</g>
+		<g class="burst pattern-three">
+			<circle class="particle circle"/>
+			<rect class="particle rect"/>
+			<path class="particle plus"/>
+			<path class="particle triangle"/>
+			<rect class="particle rect"/>
+			<path class="particle plus"/>
+		</g>
+	</svg>
+	<input type=search name=q aria-label="Search for inspiration"/>
+</div>
+
+<div id="results">
+</div>
+<div class="container">
+    <div class="form-container">
+
+        <!-- Contact Detail Section -->
+        <div class="section">
+            <h2>Contact Detail</h2>
+            <form>
+                <div class="row">
+                    <div class="form-group">
+                        <label for="first-name">First Name *</label>
+                        <input type="text" id="first-name" placeholder="First Name">
+                    </div>
+                    <div class="form-group">
+                        <label for="last-name">Last Name *</label>
+                        <input type="text" id="last-name" placeholder="Last Name">
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="form-group">
+                        <label for="phone">Phone number *</label>
+                        <input type="text" id="phone" placeholder="Phone Number">
+                    </div>
+                    <div class="form-group">
+                        <label for="mobile">Mobile number *</label>
+                        <input type="text" id="mobile" placeholder="Mobile Number">
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="form-group">
+                        <label for="email">Email *</label>
+                        <input type="email" id="email" placeholder="example@homerealty.com">
+                    </div>
+                    <div class="form-group">
+                        <label for="skype">Skype *</label>
+                        <input type="text" id="skype" placeholder="Skype">
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <!-- Profile Photo Upload Section -->
+        <div class="section">
+            <h2>Upload your profile photo</h2>
+            <div class="upload-photo">
+                <img src="placeholder.jpg" alt="Profile Photo">
+                <div class="photo-buttons">
+                    <button>Upload</button>
+                    <button>Remove</button>
+                </div>
+                <p>Note: Minimum size 300px x 300px</p>
+            </div>
+        </div>
+
+        <!-- Social Media Detail Section -->
+        <div class="section">
+            <h2>Social media detail</h2>
+            <form>
+                <div class="row">
+                    <div class="form-group">
+                        <label for="facebook">Facebook *</label>
+                        <input type="url" id="facebook" placeholder="http://www.facebook.com">
+                    </div>
+                    <div class="form-group">
+                        <label for="twitter">Twitter *</label>
+                        <input type="url" id="twitter" placeholder="http://www.twitter.com">
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="form-group">
+                        <label for="linkedin">LinkedIn *</label>
+                        <input type="url" id="linkedin" placeholder="http://www.linkedin.com">
+                    </div>
+                    <div class="form-group">
+                        <label for="instagram">Instagram *</label>
+                        <input type="url" id="instagram" placeholder="http://www.instagram.com">
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="form-group">
+                        <label for="dribble">Dribble *</label>
+                        <input type="url" id="dribble" placeholder="http://www.dribble.com">
+                    </div>
+                    <div class="form-group">
+                        <label for="pinterest">Pinterest *</label>
+                        <input type="url" id="pinterest" placeholder="http://www.pinterest.com">
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <!-- Change Password Section -->
+<div class="section change-password">
+    <h2>Change Password</h2>
+    <form>
+        <div class="row">
+            <div class="form-group">
+                <label for="old-password">Old password *</label>
+                <input type="password" id="old-password">
+            </div>
+            <div class="form-group">
+                <label for="new-password">New password *</label>
+                <input type="password" id="new-password">
+            </div>
+            <div class="form-group">
+                <label for="confirm-password">Confirm Password *</label>
+                <input type="password" id="confirm-password">
+            </div>
+        </div>
+    </form>
+</div>
+    </div>
+</div>
+</body>
+</html>

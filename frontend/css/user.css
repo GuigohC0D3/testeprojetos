@@ -1,0 +1,437 @@
+* {
+    margin: 0;
+    padding: 0;
+    font-family: 'SUSE', sans-serif;
+    box-sizing: border-box;
+}
+
+#menu {
+	background: #1457CC;
+	height: 41px;
+	border-radius: 14px;
+}
+#menu ul, #menu li {
+	margin: 0 auto;
+	padding: 0;
+	list-style: none
+}
+#menu ul {
+	width: 100%;
+	text-align: center;
+}
+#menu li {
+	display: inline-block;
+	position: relative;
+}
+#menu a {
+	display: block;
+	line-height: 41px;
+	padding: 0 14px;
+	text-decoration: none;
+	color: #FFFFFF;
+	font-size: 16px;
+}
+#menu a.dropdown-arrow:after {
+	content: "\23F7";
+	margin-left: 5px;
+}
+#menu li a:hover {
+	color: #0099CC;
+	background: #F2F2F2;
+}
+#menu input {
+	display: none;
+	margin: 0;
+	padding: 0;
+	height: 41px;
+	width: 100%;
+	opacity: 0;
+	cursor: pointer
+}
+#menu label {
+	display: none;
+	line-height: 41px;
+	text-align: center;
+	position: absolute;
+	left: 35px
+}
+#menu label:before {
+	font-size: 1.6em;
+	color: #FFFFFF;
+	content: "\2261"; 
+	margin-left: 20px;
+}
+#menu ul.sub-menus{
+	height: auto;
+	overflow: hidden;
+	width: 170px;
+	background: #444444;
+	position: absolute;
+	z-index: 99;
+	display: none;
+}
+#menu ul.sub-menus li {
+	display: block;
+	text-align: left;
+	width: 100%;
+}
+#menu ul.sub-menus a {
+	color: #FFFFFF;
+	font-size: 16px;
+}
+#menu li:hover ul.sub-menus {
+	display: block
+}
+#menu ul.sub-menus a:hover{
+	background: #F2F2F2;
+	color: #444444;
+}
+@media screen and (max-width: 800px){
+	#menu {position:relative}
+	#menu ul {background:#444444;position:absolute;top:100%;right:0;left:0;z-index:3;height:auto;display:none;text-align:left;}
+	#menu ul.sub-menus {width:100%;position:static;}
+	#menu ul.sub-menus a {padding-left:30px;}
+	#menu li {display:block;float:none;width:auto;}
+	#menu input, #menu label {position:absolute;top:0;left:0;display:block}
+	#menu input {z-index:4}
+	#menu input:checked + label {color:#FFFFFF}
+	#menu input:checked + label:before {content:"\00d7"}
+	#menu input:checked ~ ul {display:block}
+}
+
+@import url("https://fonts.googleapis.com/css2?family=Tiro+Tamil&display=swap");
+
+svg {
+	font-family: "Tiro Tamil", sans-serif;
+	width: 100%; height: 100%;
+}
+svg text {
+	animation: stroke 5s;
+	stroke-width: 2;
+	stroke: #365FA0;
+	font-size: 60px;
+    animation-duration: 10s;
+}
+@keyframes stroke {
+	0%   {
+		fill: rgba(72,138,204,0); stroke: rgba(54,95,160,1);
+		stroke-dashoffset: 25%; stroke-dasharray: 0 50%; stroke-width: 2;
+	}
+	70%  {fill: rgba(72,138,204,0); stroke: rgba(54,95,160,1); }
+	80%  {fill: rgba(72,138,204,0); stroke: rgba(54,95,160,1); stroke-width: 3; }
+	100% {
+		fill: rgba(72,138,204,1); stroke: rgba(54,95,160,0);
+		stroke-dashoffset: -25%; stroke-dasharray: 50% 0; stroke-width: 0;
+	}
+}
+
+.wrapper {background-color: #FFFFFF};
+
+
+body {
+	display: grid;
+	grid-template:
+		"search" minmax(300px, 50vh)
+		"results" minmax(20%, auto)
+		/ 1fr;
+	
+}
+
+#search {
+	display: grid;
+	grid-area: search;
+	grid-template:
+		"search" 60px
+		/ 420px;
+	justify-content: center;
+	align-content: center;
+	justify-items: stretch;
+	align-items: stretch;
+	background: hsl(0, 0%, 99%);
+}
+
+#search input {
+	display: block;
+	grid-area: search;
+	-webkit-appearance: none;
+	appearance: none;
+	width: 100%;
+	height: 100%;
+	background: none;
+	padding: 0 30px 0 60px;
+	border: none;
+	border-radius: 100px;
+	font: 24px/1 system-ui, sans-serif;
+	outline-offset: -8px;
+}
+
+
+#search svg {
+	grid-area: search;
+	overflow: visible;
+	color: #0f1ff7;
+	fill: none;
+	stroke: currentColor;
+}
+
+.spark {
+	fill: currentColor;
+	stroke: none;
+	r: 15;
+}
+
+.spark:nth-child(1) {
+	animation:
+		spark-radius 2.03s 1s both,
+		spark-one-motion 2s 1s both;
+}
+
+@keyframes spark-radius {
+	0% { r: 0; animation-timing-function: cubic-bezier(0, 0.3, 0, 1.57) }
+	30% { r: 15; animation-timing-function: cubic-bezier(1, -0.39, 0.68, 1.04) }
+	95% { r: 8 }
+	99% { r: 10 }
+	99.99% { r: 7 }
+	100% { r: 0 }
+}
+
+@keyframes spark-one-motion {
+	0% { transform: translate(-20%, 50%); animation-timing-function: cubic-bezier(0.63, 0.88, 0, 1.25) }
+	20% { transform: rotate(-0deg) translate(0%, -50%); animation-timing-function: ease-in }
+	80% { transform: rotate(-230deg) translateX(-20%) rotate(-100deg) translateX(15%); animation-timing-function: linear }
+	100% { transform: rotate(-360deg) translate(30px, 100%); animation-timing-function: cubic-bezier(.64,.66,0,.51) }
+}
+
+.spark:nth-child(2) {
+	animation:
+		spark-radius 2.03s 1s both,
+		spark-two-motion 2.03s 1s both;
+}
+
+@keyframes spark-two-motion {
+	0% { transform: translate(120%, 50%) rotate(-70deg) translateY(0%); animation-timing-function: cubic-bezier(0.36, 0.18, 0.94, 0.55) }
+	20% { transform: translate(90%, -80%) rotate(60deg) translateY(-80%); animation-timing-function: cubic-bezier(0.16, 0.77, 1, 0.4) }
+	40% { transform: translate(110%, -50%) rotate(-30deg) translateY(-120%); animation-timing-function: linear }
+	70% { transform: translate(100%, -50%) rotate(120deg) translateY(-100%); animation-timing-function: linear }
+	80% { transform: translate(95%, 50%) rotate(80deg) translateY(-150%); animation-timing-function: cubic-bezier(.64,.66,0,.51) }
+	100% { transform: translate(100%, 50%) rotate(120deg) translateY(0%) }
+}
+
+.spark:nth-child(3) {
+	animation:
+		spark-radius 2.05s 1s both,
+		spark-three-motion 2.03s 1s both;
+}
+
+@keyframes spark-three-motion {
+	0% { transform: translate(50%, 100%) rotate(-40deg) translateX(0%); animation-timing-function: cubic-bezier(0.62, 0.56, 1, 0.54) }
+	30% { transform: translate(40%, 70%) rotate(20deg) translateX(20%); animation-timing-function: cubic-bezier(0, 0.21, 0.88, 0.46) }
+	40% { transform: translate(65%, 20%) rotate(-50deg) translateX(15%); animation-timing-function: cubic-bezier(0, 0.24, 1, 0.62) }
+	60% { transform: translate(60%, -40%) rotate(-50deg) translateX(20%); animation-timing-function: cubic-bezier(0, 0.24, 1, 0.62) }
+	70% { transform: translate(70%, -0%) rotate(-180deg) translateX(20%); animation-timing-function: cubic-bezier(0.15, 0.48, 0.76, 0.26) }
+	100% { transform: translate(70%, -0%) rotate(-360deg) translateX(0%) rotate(180deg) translateX(20%); }
+}
+
+
+
+
+.burst {
+	stroke-width: 3;
+}
+
+.burst :nth-child(2n) { color: #ff783e }
+.burst :nth-child(3n) { color: #ffab00 }
+.burst :nth-child(4n) { color: #55e214 }
+.burst :nth-child(5n) { color: #82d9f5 }
+
+.circle {
+	r: 6;
+}
+
+.rect {
+	width: 10px;
+	height: 10px;
+}
+
+.triangle {
+	d: path("M0,-6 L7,6 L-7,6 Z");
+	stroke-linejoin: round;
+}
+
+.plus {
+	d: path("M0,-5 L0,5 M-5,0L 5,0");
+	stroke-linecap: round;
+}
+
+
+
+
+.burst:nth-child(4) {
+	transform: translate(30px, 100%) rotate(150deg);
+}
+
+.burst:nth-child(5) {
+	transform: translate(50%, 0%) rotate(-20deg);
+}
+
+.burst:nth-child(6) {
+	transform: translate(100%, 50%) rotate(75deg);
+}
+
+.burst * {}
+
+@keyframes particle-fade {
+	0%, 100% { opacity: 0 }
+	5%, 80% { opacity: 1 }
+}
+
+.burst :nth-child(1) { animation: particle-fade 600ms 2.95s both, particle-one-move 600ms 2.95s both; }
+.burst :nth-child(2) { animation: particle-fade 600ms 2.95s both, particle-two-move 600ms 2.95s both; }
+.burst :nth-child(3) { animation: particle-fade 600ms 2.95s both, particle-three-move 600ms 2.95s both; }
+.burst :nth-child(4) { animation: particle-fade 600ms 2.95s both, particle-four-move 600ms 2.95s both; }
+.burst :nth-child(5) { animation: particle-fade 600ms 2.95s both, particle-five-move 600ms 2.95s both; }
+.burst :nth-child(6) { animation: particle-fade 600ms 2.95s both, particle-six-move 600ms 2.95s both; }
+
+@keyframes particle-one-move { 0% { transform: rotate(0deg) translate(-5%) scale(0.0001, 0.0001) } 100% { transform: rotate(-20deg) translateX(8%) scale(0.5, 0.5) } }
+@keyframes particle-two-move { 0% { transform: rotate(0deg) translate(-5%) scale(0.0001, 0.0001) } 100% { transform: rotate(0deg) translateX(8%) scale(0.5, 0.5) } }
+@keyframes particle-three-move { 0% { transform: rotate(0deg) translate(-5%) scale(0.0001, 0.0001) } 100% { transform: rotate(20deg) translateX(8%) scale(0.5, 0.5) } }
+@keyframes particle-four-move { 0% { transform: rotate(0deg) translate(-5%) scale(0.0001, 0.0001) } 100% { transform: rotate(-35deg) translateX(12%) } }
+@keyframes particle-five-move { 0% { transform: rotate(0deg) translate(-5%) scale(0.0001, 0.0001) } 100% { transform: rotate(0deg) translateX(12%) } }
+@keyframes particle-six-move { 0% { transform: rotate(0deg) translate(-5%) scale(0.0001, 0.0001) } 100% { transform: rotate(35deg) translateX(12%) } }
+
+
+
+.bar {
+	width: 100%;
+	height: 100%;
+	ry: 50%;
+	stroke-width: 10;
+	animation: bar-in 900ms 3s both;
+}
+
+@keyframes bar-in {
+	0% { stroke-dasharray: 0 180 0 226 0 405 0 0 }
+	100% { stroke-dasharray: 0 0 181 0 227 0 405 0 }
+}
+
+.magnifier {
+	animation: magnifier-in 600ms 3.6s both;
+	transform-box: fill-box;
+}
+
+@keyframes magnifier-in {
+	0% { transform: translate(20px, 8px) rotate(-45deg) scale(0.01, 0.01); }
+	50% { transform: translate(-4px, 8px) rotate(-45deg); }
+	100% { transform: translate(0px, 0px) rotate(0deg); }
+}
+
+.magnifier .glass {
+	cx: 27;
+	cy: 27;
+	r: 8;
+	stroke-width: 3;
+}
+.magnifier .handle {
+	x1: 32;
+	y1: 32;
+	x2: 44;
+	y2: 44;
+	stroke-width: 3;
+}
+
+
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: white;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+}
+
+.form-container {
+    display: grid;
+    grid-template-columns: 1fr 300px;
+    gap: 20px;
+}
+
+.section {
+    margin-bottom: 20px;
+}
+
+h2 {
+    margin-bottom: 10px;
+}
+
+.row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    flex-basis: 48%;
+}
+
+label {
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+input {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.upload-photo {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border: 1px dashed #ddd;
+    padding: 20px;
+    text-align: center;
+}
+
+.upload-photo img {
+    width: 150px;
+    height: 150px;
+    margin-bottom: 10px;
+    background-color: #eee;
+}
+
+.photo-buttons {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.photo-buttons button {
+    padding: 10px;
+    border: none;
+    background-color: #007bff;
+    color: white;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.photo-buttons button:last-child {
+    background-color: #dc3545;
+}
+
+/* Change Password Section */
+.section.change-password .row {
+    flex-direction: column;
+}
+
+.section.change-password .form-group {
+    flex-basis: 100%;
+    margin-bottom: 10px;
+}
