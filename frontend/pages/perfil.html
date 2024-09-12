@@ -91,27 +91,27 @@
 
         <!-- Contact Detail Section -->
         <div class="section">
-            <h2>Contact Detail</h2>
+            <h2>Detalhes do Contato</h2>
             <form>
                 <div class="row">
                     <div class="form-group">
-                        <label for="first-name">First Name *</label>
+                        <label for="first-name">Primeiro Nome *</label>
                         <input type="text" id="first-name" placeholder="First Name">
                     </div>
                     <div class="form-group">
-                        <label for="last-name">Last Name *</label>
+                        <label for="last-name">Ultimo Nome *</label>
                         <input type="text" id="last-name" placeholder="Last Name">
                     </div>
                 </div>
 
                 <div class="row">
                     <div class="form-group">
-                        <label for="phone">Phone number *</label>
-                        <input type="text" id="phone" placeholder="Phone Number">
+                        <label for="cpf">CPF:</label>
+                        <input type="text" id="cpf" name="cpf" placeholder="CPF">
                     </div>
                     <div class="form-group">
-                        <label for="mobile">Mobile number *</label>
-                        <input type="text" id="mobile" placeholder="Mobile Number">
+                        <label for="mobile">Celular *</label>
+                        <input type="tel" id="mobile" name="mobile" placeholder="Mobile Number">
                     </div>
                 </div>
 
@@ -130,11 +130,13 @@
 
         <!-- Profile Photo Upload Section -->
         <div class="section">
-            <h2>Upload your profile photo</h2>
+            <h2>Atualize sua foto de perfil</h2>
             <div class="upload-photo">
                 <img src="placeholder.jpg" alt="Profile Photo">
                 <div class="photo-buttons">
-                    <button>Upload</button>
+                    <button id="uploadButton">Upload</button>
+                    <input type="file" id="fileInput" style="display: none;">
+                    <button id="saveButton">Salvar</button>
                     <button>Remove</button>
                 </div>
                 <p>Note: Minimum size 300px x 300px</p>
@@ -143,7 +145,7 @@
 
         <!-- Social Media Detail Section -->
         <div class="section">
-            <h2>Social media detail</h2>
+            <h2>Redes Sociais</h2>
             <form>
                 <div class="row">
                     <div class="form-group">
@@ -169,8 +171,8 @@
 
                 <div class="row">
                     <div class="form-group">
-                        <label for="dribble">Dribble *</label>
-                        <input type="url" id="dribble" placeholder="http://www.dribble.com">
+                        <label for="dribble">Github *</label>
+                        <input type="url" id="dribble" placeholder="http://www.github.com">
                     </div>
                     <div class="form-group">
                         <label for="pinterest">Pinterest *</label>
@@ -182,25 +184,29 @@
 
         <!-- Change Password Section -->
 <div class="section change-password">
-    <h2>Change Password</h2>
+    <h2>Mudar Senha</h2>
     <form>
         <div class="row">
             <div class="form-group">
-                <label for="old-password">Old password *</label>
+                <label for="old-password">Antiga Senha *</label>
                 <input type="password" id="old-password">
             </div>
             <div class="form-group">
-                <label for="new-password">New password *</label>
+                <label for="new-password">Novo Password *</label>
                 <input type="password" id="new-password">
             </div>
             <div class="form-group">
-                <label for="confirm-password">Confirm Password *</label>
+                <label for="confirm-password">Confirmar Password *</label>
                 <input type="password" id="confirm-password">
             </div>
         </div>
     </form>
 </div>
     </div>
+    <button type="button" class="update-btn">Atualizar Perfil</button>
+    <button type="button" class="delete-btn">Deletar Perfil</button>
 </div>
+
+<script src="../js/user.js"></script>
 </body>
 </html>
