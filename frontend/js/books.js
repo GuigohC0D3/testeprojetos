@@ -1,6 +1,6 @@
 document.getElementById('refreshBooks').addEventListener('click', clearAndReloadBooks);
 document.getElementById('cancelDelete').addEventListener('click', hidePopover);
-
+document.getElementById('rentBookButton').addEventListener('click', showRentPopover)
 //Função para apagar conteúdo da tabela e recarregar a página
 function clearAndReloadBooks() {
     const tableBody = document.getElementById("booksTableBody");
@@ -48,6 +48,23 @@ function hidePopover() {
         console.error('Popover element not found');
     }
 }
+
+// Função para abrir o popover de aluguel de livro
+function showRentPopover() {
+    const rentPopover = document.getElementById('rentBookPopover');
+    rentPopover.style.display = 'block';
+}
+
+// Função para fechar o popover de aluguel de livro
+function hideRentPopover() {
+    const rentPopover = document.getElementById('rentBookPopover');
+    rentPopover.style.display = 'none';
+}
+
+// Adiciona evento ao botão "Alugar Livro" para mostrar o popover
+document.getElementById('rentBookButton').addEventListener('click', showRentPopover);
+
+
 
 // Função para salvar atualizações no livro (PUT)
 async function saveUpdatedBook() {
@@ -111,38 +128,45 @@ async function deleteBook(bookId) {
     }
 }
 
-async function rentBook(bookId) {
-    const memberId = prompt("Digite o ID do membro que está alugando o livro:");
-    const dueDate = prompt("Digite a data de devolução (YYYY-MM-DD):");
 
-    if (!memberId || !dueDate) {
-        alert("ID do membro e data de devolução são obrigatórios.");
+async function confirmRentBook() {
+    const memberId = document.getElementById('rentMemberId').value;
+    const bookId = document.getElementById('rentBookId').value;
+    const returnDate = document.getElementById('returnDate').value;
+
+    if (!memberId || !bookId || !returnDate) {
+        alert("Todos os campos são obrigatórios.");
         return;
     }
 
     try {
-        const response = await fetch('http://localhost:5000/rent_book', {
+        const response = await fetch('http://localhost:5000/books', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ member_id: memberId, book_id: bookId, due_date: dueDate })
+            body: JSON.stringify({ member_id: memberId, book_id: bookId, return_date: returnDate })
         });
 
         if (response.ok) {
             alert("Livro alugado com sucesso!");
-            getBooks(); // Recarregar os livros para atualizar a disponibilidade
+            hideRentPopover();  // Esconde o popover após o sucesso
+            clearAndReloadBooks();  // Atualiza a tabela de livros
         } else {
-            console.error('Erro ao alugar o livro.');
+            const res = await response.json();
+            alert(res.data);
         }
     } catch (error) {
-        console.error('Erro ao alugar o livro:', error);
+        
+        
+console.error('Erro ao alugar o livro:', error);
     }
 }
 
+
 async function returnBook(rentalId) {
     try {
-        const response = await fetch(`http://localhost:5000/return_book/${rentalId}`, {
+        const response = await fetch(`http://localhost:5000/books`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
@@ -167,6 +191,10 @@ async function addBook() {
     const authorId = document.getElementById('author_id').value;
     const publicationYear = document.getElementById('publication_year').value;
     const genre = document.getElementById('genre').value;
+
+    // Desabilita o botão para evitar múltiplos envios
+    const saveButton = document.getElementById('save');
+    saveButton.disabled = true;
 
     try {
         const response = await fetch('http://localhost:5000/books', {
@@ -231,6 +259,9 @@ async function getBooks() {
             genreCell.textContent = book.genre;
 
             const actionCell = document.createElement("td");
+
+            const availabilityCell = document.createElement("td");
+            availabilityCell.textContent = book.disponibilidade;
             
             // Botão para editar
             const editButton = document.createElement("button");
@@ -254,6 +285,7 @@ async function getBooks() {
             row.appendChild(yearCell);
             row.appendChild(genreCell);
             row.appendChild(actionCell);
+            row.appendChild(availabilityCell);
 
             tableBody.appendChild(row);
         });

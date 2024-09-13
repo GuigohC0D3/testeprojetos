@@ -89,11 +89,16 @@ async function deleteMember(member_id) {
         if (response.ok) {
             const res = await response.json();
             console.log(res);
-            alert('Membro deletado com sucesso'); // Exibe uma mensagem de sucesso
-            clearAndReloadMembers(); // Recarrega os membros após deletar
-            hidePopover(); // Fecha o popover
-            return true
+            
+            if (res.status === 200) {
+                alert('Membro deletado com sucesso');  // Exibe uma mensagem de sucesso
+                clearAndReloadMembers();  // Recarrega os membros após deletar
+                hidePopover();  // Fecha o popover
+            } else if (res.status === 404) {
+                alert('Membro não encontrado');
+            }
         } else {
+            alert('Erro ao deletar membro');
             console.error('Erro ao deletar membro.');
         }
     } catch (error) {
@@ -102,8 +107,8 @@ async function deleteMember(member_id) {
         // Reabilita o botão e limpa o formulário
         document.getElementById('member_id').value = '';
     }
-    return false
 }
+
 
 // Função para adicionar membros
 async function addMember() {

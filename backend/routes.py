@@ -28,13 +28,16 @@ def deleteMember():
     try:
         data = request.json
         if 'id' not in data:
-            return jsonify({'data': 'Precisa de um id', 'status': 500})
+            return jsonify({'data': 'Precisa de um ID', 'status': 400})  # Status 400 para requisição inválida
+        
         # Supondo que você tenha uma função members.deleteMember que deleta pelo ID
         result = members.deleteMember(data['id'])
+        
         if result:  # Se o membro foi deletado com sucesso
             return jsonify({'data': 'Membro deletado com sucesso', 'status': 200})
         else:  # Se o ID não foi encontrado
             return jsonify({'data': 'Membro não encontrado', 'status': 404})
+
     except Exception as e:
         return jsonify({'data': f'Erro ao deletar membro: {str(e)}', 'status': 500})
     
@@ -137,56 +140,36 @@ def updateBook():
     except Exception as e:
         print(f"Erro no servidor ao atualizar o livro: {str(e)}")
         return jsonify({'data': f'Erro ao atualizar livro: {str(e)}', 'status': 500})
+    
 
-# Paginação de livros
-@main_bp.route('/books', methods=['GET'])
-def getBooks():
+@main_bp.route('/books', methods=['POST'])
+@cross_origin()
+def rentBook():
     try:
-        page = int(request.args.get('page', 1))
-        per_page = int(request.args.get('per_page', 10))
-        
-        # Supondo que books.getBooks() retorna a lista de livros
-        all_books = books.getBooks()
-        total_books = len(all_books)
-        total_pages = ceil(total_books / per_page)
+        data = request.json
 
-        # Paginação manual
-        start = (page - 1) * per_page
-        end = start + per_page
-        paginated_books = all_books[start:end]
+        # Verificação dos campos obrigatórios
+        if 'member_id' not in data:
+            return jsonify({'data': 'Precisa do ID do membro', 'status': 400})
+        if 'book_id' not in data:
+            return jsonify({'data': 'Precisa do ID do livro', 'status': 400})
+        if 'return_date' not in data:
+            return jsonify({'data': 'Precisa da data de devolução', 'status': 400})
 
-        return jsonify({
-            'data': paginated_books,
-            'pagination': {
-                'current_page': page,
-                'per_page': per_page,
-                'total_books': total_books,
-                'total_pages': total_pages
-            }
-        }), 200
+        # Chamando a função de aluguel no books.py
+        result = books.rent_book(data['member_id'], data['book_id'], data['return_date'])
+
+        return jsonify(result), result['status']
+
     except Exception as e:
-        return jsonify({'data': f'Erro ao buscar livros: {str(e)}', 'status': 500})
+        print(f"Erro ao alugar livro: {str(e)}")
+        return jsonify({'data': f'Erro ao alugar livro: {str(e)}', 'status': 500}), 500
 
 
 @main_bp.route('/employee')
 @cross_origin()
 def get_employee():
     return employee.get_employee()
-
-# Para alugar livros
-@main_bp.route('/rent_book', methods=['POST'])
-@cross_origin()
-def rent_book_route():
-    data = request.json
-    if 'member_id' not in data:
-        return jsonify({'data': 'Precisa do ID do membro', 'status': 500})
-    if 'book_id' not in data:
-        return jsonify({'data': 'Precisa do ID do livro', 'status': 500})
-    if 'due_date' not in data:
-        return jsonify({'data': 'Precisa de uma data de devolução', 'status': 500})
-
-    return books.rent_book(data['member_id'], data['book_id'], data['due_date'])
-
 
 #Devolução de Livros
 @main_bp.route('/return_book/<int:rental_id>', methods=['PUT'])
