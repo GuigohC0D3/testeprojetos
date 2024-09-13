@@ -3,9 +3,9 @@ from connection.config import connect_db
 from flask import request, jsonify
 
 def get_books():
-    conn = connect_db()
-    if conn:
-        try:
+    try:
+        conn = connect_db()
+        if conn:
             cur = conn.cursor()
 
             # Consulta para buscar os livros e verificar a disponibilidade
@@ -15,7 +15,7 @@ def get_books():
                     WHEN r.book_id IS NOT NULL AND r.return_date IS NULL THEN 'Alugado'
                     ELSE 'Disponível'
                 END AS disponibilidade
-                FROM books b
+                FROM bibliotecas b
                 LEFT JOIN rentals r ON b.book_id = r.book_id AND r.return_date IS NULL;
             """)
 
@@ -36,11 +36,17 @@ def get_books():
 
             return jsonify({'books': books_list}), 200
 
-        except psycopg2.Error as e:
-            print(f"Erro ao listar livros: {e}")
-            return jsonify({'error': 'Erro ao listar livros'}), 500
-    else:
-        return jsonify({'error': 'Erro ao conectar ao banco de dados'}), 500
+        else:
+            print("Erro ao conectar ao banco de dados.")
+            return jsonify({'error': 'Erro ao conectar ao banco de dados'}), 500
+
+    except psycopg2.Error as e:
+        print(f"Erro ao listar livros: {e}")
+        return jsonify({'error': f"Erro ao listar livros: {str(e)}"}), 500
+    except Exception as e:
+        print(f"Erro geral: {e}")
+        return jsonify({'error': f"Erro geral: {str(e)}"}), 500
+
 
 
     
