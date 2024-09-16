@@ -145,7 +145,7 @@ def search_book(search_term, search_type):
         print("Não foi possível conectar ao banco de dados.")
 
 
-def rent_book(member_id, book_id, return_date):
+def rent_book(member_id, book_id, rental_date, return_date):
     try:
         conn = connect_db()
         if conn:
@@ -167,9 +167,14 @@ def rent_book(member_id, book_id, return_date):
             # Inserir o aluguel na tabela alugueis
             cur.execute("""
                 INSERT INTO alugueis (member_id, book_id, rental_date, return_date)
-                VALUES (%s, %s, NOW(), %s);
-            """, (member_id, book_id, return_date))
-            
+                VALUES (%s, %s, %s, %s);
+            """, (member_id, book_id, rental_date, return_date))
+
+            # Atualizar o status do livro para 'Alugado' na tabela de livros (caso haja essa coluna)
+            cur.execute("""
+                UPDATE bibliotecas SET disponibilidade = 'Alugado' WHERE book_id = %s;
+            """, (book_id,))
+
             conn.commit()  # Confirma a transação
             print(f"Aluguel do livro {book_id} registrado com sucesso para o membro {member_id}!")
 
@@ -185,3 +190,4 @@ def rent_book(member_id, book_id, return_date):
     except psycopg2.Error as e:
         print(f"Erro ao alugar livro no banco de dados: {str(e)}")
         return {'data': f"Erro ao alugar livro: {str(e)}", 'status': 500}
+

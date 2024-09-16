@@ -133,14 +133,15 @@ async function confirmRentBook() {
     const memberId = document.getElementById('rentMemberId').value;
     const bookId = document.getElementById('rentBookId').value;
     const returnDate = document.getElementById('returnDate').value;
+    const rentalDate = document.getElementById('rentalDate').value;
 
-    if (!memberId || !bookId || !returnDate) {
+    if (!memberId || !bookId || !returnDate || !rentalDate) {
         alert("Todos os campos são obrigatórios.");
         return;
     }
 
     try {
-        const response = await fetch('http://localhost:5000/books', {
+        const response = await fetch('http://localhost:5000/alugueis', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -148,12 +149,15 @@ async function confirmRentBook() {
             body: JSON.stringify({
                 member_id: memberId,
                 book_id: bookId,
+                rental_date: rentalDate,
                 return_date: returnDate
             })
         });
 
+        const res = await response.json(); // Obtenha o JSON da resposta
+
         if (response.ok) {
-            alert("Livro alugado com sucesso!");
+            alert(res.data || "Livro alugado com sucesso!"); // Exibe a mensagem de sucesso da resposta
 
             // Atualizar o status de disponibilidade na tabela
             const rows = document.querySelectorAll("#booksTableBody tr");
@@ -167,13 +171,96 @@ async function confirmRentBook() {
 
             hideRentPopover();  // Esconde o popover após o sucesso
         } else {
-            const res = await response.json();
-            alert(res.data);
+            alert(res.data || "Erro ao alugar o livro.");
         }
     } catch (error) {
         console.error('Erro ao alugar o livro:', error);
+        alert("Erro de conexão ou erro inesperado.");
     }
 }
+
+async function fetchBooks() {
+    try {
+        const response = await fetch('http://localhost:5000/livros'); // Endpoint que retorna a lista de livros
+        const books = await response.json();
+
+        const tableBody = document.getElementById('booksTableBody');
+        tableBody.innerHTML = ''; // Limpa a tabela antes de preencher
+
+        books.data.forEach(book => {
+            const row = document.createElement('tr');
+            
+            row.innerHTML = `
+                <td>${book.id}</td>
+                <td>${book.title}</td>
+                <td>${book.author_id}</td>
+                <td>${book.publication_year}</td>
+                <td>${book.genre}</td>
+                <td>
+                    <button onclick="rentBook(${book.id})">Alugar</button>
+                    <button onclick="editBook(${book.id})">Editar</button>
+                    <button onclick="deleteBook(${book.id})">Excluir</button>
+                </td>
+                <td>${book.availability}</td>
+            `;
+            tableBody.appendChild(row);
+        });
+
+    } catch (error) {
+        console.error('Erro ao buscar livros:', error);
+        alert('Erro ao buscar livros.');
+    }
+}
+
+// Chama fetchBooks ao carregar a página
+window.onload = fetchBooks;
+
+
+async function loadBooks() {
+    try {
+        const response = await fetch('http://localhost:5000/livros', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        });
+
+        const data = await response.json();
+        if (response.ok) {
+            const books = data.data;
+
+            const tableBody = document.getElementById('booksTableBody');
+            tableBody.innerHTML = ''; // Limpa a tabela antes de carregar os novos dados
+
+            books.forEach(book => {
+                const row = document.createElement('tr');
+
+                const bookIdCell = document.createElement('td');
+                bookIdCell.textContent = book.book_id;
+
+                const titleCell = document.createElement('td');
+                titleCell.textContent = book.title;
+
+                const statusCell = document.createElement('td');
+                statusCell.textContent = book.status;
+
+                row.appendChild(bookIdCell);
+                row.appendChild(titleCell);
+                row.appendChild(statusCell);
+
+                tableBody.appendChild(row);
+            });
+        } else {
+            console.error('Erro ao carregar os livros:', data.data);
+        }
+    } catch (error) {
+        console.error('Erro ao carregar os livros:', error);
+    }
+}
+
+// Chame esta função quando a página carregar
+document.addEventListener('DOMContentLoaded', loadBooks);
+
 
 async function returnBook(rentalId) {
     try {

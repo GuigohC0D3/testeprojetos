@@ -123,13 +123,7 @@ def updateBook():
             return jsonify({'data': 'Precisa de um gênero', 'status': 500})
 
         # Atualize o livro no banco de dados
-        result = books.update_book_in_db(
-            data['book_id'], 
-            data['title'], 
-            data['author_id'], 
-            data['publication_year'], 
-            data['genre']
-        )
+        result = books.update_book_in_db(data['book_id'],data['title'],data['author_id'],data['publication_year'],data['genre'])
 
         if result:  # Se o livro foi atualizado com sucesso
             return jsonify({'message': 'Livro atualizado com sucesso!'}), 200
@@ -141,23 +135,19 @@ def updateBook():
         return jsonify({'data': f'Erro ao atualizar livro: {str(e)}', 'status': 500})
     
 
-@main_bp.route('/books', methods=['POST'])
+@main_bp.route('/alugueis', methods=['POST'])
 @cross_origin()
-def rentBook():
+def createRent():
     try:
         data = request.json
-        print(f"Dados recebidos no POST /books: {data}")  # Log dos dados recebidos
+        print(f"Dados recebidos no POST /alugueis: {data}")  # Log dos dados recebidos
 
         # Verificação dos campos obrigatórios
-        if 'member_id' not in data:
-            return jsonify({'data': 'Precisa do ID do membro', 'status': 400})
-        if 'book_id' not in data:
-            return jsonify({'data': 'Precisa do ID do livro', 'status': 400})
-        if 'return_date' not in data:
-            return jsonify({'data': 'Precisa da data de devolução', 'status': 400})
+        if not all(key in data for key in ('member_id', 'book_id', 'rental_date', 'return_date')):
+            return jsonify({'data': 'Faltam campos obrigatórios.', 'status': 400})
 
         # Chamar a função de aluguel no books.py
-        result = books.rent_book(data['member_id'], data['book_id'], data['return_date'])
+        result = books.rent_book(data['member_id'], data['book_id'], data['rental_date'], data['return_date'])
         print(f"Resultado da função rent_book: {result}")  # Log do resultado do aluguel
 
         return jsonify(result), result['status']
@@ -166,7 +156,19 @@ def rentBook():
         print(f"Erro ao alugar livro: {str(e)}")
         return jsonify({'data': f'Erro ao alugar livro: {str(e)}', 'status': 500}), 500
 
+
+# Rota para listar ou buscar aluguéis (GET)
+@main_bp.route('/alugueis', methods=['GET'])
+@cross_origin()
+def getRents():
+    try:
+        return jsonify({'data': 'Aqui estarão os aluguéis listados.', 'status': 200})
+
+    except Exception as e:
+        print(f"Erro ao buscar aluguéis: {str(e)}")
+        return jsonify({'data': f'Erro ao buscar aluguéis: {str(e)}', 'status': 500}), 500
     
+   
 @main_bp.route('/employee')
 @cross_origin()
 def get_employee():
