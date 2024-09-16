@@ -12,11 +12,11 @@ def get_books():
             cur.execute("""
                 SELECT b.book_id, b.title, b.author_id, b.publication_year, b.genre,
                 CASE
-                    WHEN r.book_id IS NOT NULL AND r.return_date IS NULL THEN 'Alugado'
+                    WHEN a.book_id IS NOT NULL AND a.return_date IS NULL THEN 'Alugado'
                     ELSE 'Disponível'
                 END AS disponibilidade
                 FROM bibliotecas b
-                LEFT JOIN rentals r ON b.book_id = r.book_id AND r.return_date IS NULL;
+                LEFT JOIN alugueis a ON b.book_id = a.book_id AND a.return_date IS NULL;
             """)
 
             books = cur.fetchall()
@@ -31,7 +31,7 @@ def get_books():
                     'author_id': book[2],
                     'publication_year': book[3],
                     'genre': book[4],
-                    'disponibilidade': book[5]  # Adiciona a coluna de disponibilidade
+                    'disponibilidade': book[5]  # Adiciona a coluna de disponibilidade ("Alugado" ou "Disponível")
                 })
 
             return jsonify({'books': books_list}), 200
@@ -46,11 +46,7 @@ def get_books():
     except Exception as e:
         print(f"Erro geral: {e}")
         return jsonify({'error': f"Erro geral: {str(e)}"}), 500
-
-
-
     
-
 def addBook(title, author_id, publication_year, genre):
     conn = connect_db()  # Conectar ao banco de dados
     if conn:
@@ -148,23 +144,44 @@ def search_book(search_term, search_type):
     else:
         print("Não foi possível conectar ao banco de dados.")
 
+
 def rent_book(member_id, book_id, return_date):
     try:
         conn = connect_db()
-        cur = conn.cursor()
+        if conn:
+            cur = conn.cursor()
 
-        # Inserir aluguel no banco de dados
-        cur.execute("""
-            INSERT INTO rentals (member_id, book_id, rental_date, return_date)
-            VALUES (%s, %s, NOW(), %s);
-        """, (member_id, book_id, return_date))
+            print(f"Iniciando o aluguel para o livro {book_id} e membro {member_id}")
 
-        conn.commit()
-        cur.close()
-        conn.close()
+            # Verificar se o livro já está alugado (verifica se o livro tem um return_date NULL)
+            cur.execute("""
+                SELECT COUNT(*) FROM alugueis WHERE book_id = %s AND return_date IS NULL;
+            """, (book_id,))
+            rented_count = cur.fetchone()[0]
+            print(f"Quantidade de alugueis ativos para o livro {book_id}: {rented_count}")
 
-        return {'data': 'Livro alugado com sucesso!', 'status': 200}
+            if rented_count > 0:
+                print(f"Livro {book_id} já está alugado.")
+                return {'data': 'Este livro já está alugado e não pode ser alugado novamente até ser devolvido.', 'status': 400}
+
+            # Inserir o aluguel na tabela alugueis
+            cur.execute("""
+                INSERT INTO alugueis (member_id, book_id, rental_date, return_date)
+                VALUES (%s, %s, NOW(), %s);
+            """, (member_id, book_id, return_date))
+            
+            conn.commit()  # Confirma a transação
+            print(f"Aluguel do livro {book_id} registrado com sucesso para o membro {member_id}!")
+
+            cur.close()  # Fecha o cursor
+            conn.close()  # Fecha a conexão
+
+            return {'data': 'Livro alugado com sucesso!', 'status': 200}
+
+        else:
+            print("Erro ao conectar ao banco de dados")
+            return {'data': 'Erro ao conectar ao banco de dados', 'status': 500}
 
     except psycopg2.Error as e:
-        print(f"Erro ao alugar livro: {e}")
+        print(f"Erro ao alugar livro no banco de dados: {str(e)}")
         return {'data': f"Erro ao alugar livro: {str(e)}", 'status': 500}

@@ -61,8 +61,7 @@ def updateMember():
     except Exception as e:
         return jsonify({'data': f'Erro ao atualizar membro: {str(e)}', 'status': 500})
 
-
-    
+ 
         
 @main_bp.route('/')
 @cross_origin()
@@ -147,6 +146,7 @@ def updateBook():
 def rentBook():
     try:
         data = request.json
+        print(f"Dados recebidos no POST /books: {data}")  # Log dos dados recebidos
 
         # Verificação dos campos obrigatórios
         if 'member_id' not in data:
@@ -156,8 +156,9 @@ def rentBook():
         if 'return_date' not in data:
             return jsonify({'data': 'Precisa da data de devolução', 'status': 400})
 
-        # Chamando a função de aluguel no books.py
+        # Chamar a função de aluguel no books.py
         result = books.rent_book(data['member_id'], data['book_id'], data['return_date'])
+        print(f"Resultado da função rent_book: {result}")  # Log do resultado do aluguel
 
         return jsonify(result), result['status']
 
@@ -165,7 +166,7 @@ def rentBook():
         print(f"Erro ao alugar livro: {str(e)}")
         return jsonify({'data': f'Erro ao alugar livro: {str(e)}', 'status': 500}), 500
 
-
+    
 @main_bp.route('/employee')
 @cross_origin()
 def get_employee():

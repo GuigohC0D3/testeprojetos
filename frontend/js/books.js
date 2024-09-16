@@ -145,24 +145,35 @@ async function confirmRentBook() {
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ member_id: memberId, book_id: bookId, return_date: returnDate })
+            body: JSON.stringify({
+                member_id: memberId,
+                book_id: bookId,
+                return_date: returnDate
+            })
         });
 
         if (response.ok) {
             alert("Livro alugado com sucesso!");
+
+            // Atualizar o status de disponibilidade na tabela
+            const rows = document.querySelectorAll("#booksTableBody tr");
+            rows.forEach(row => {
+                const idCell = row.querySelector("td:first-child").textContent;
+                if (idCell == bookId) {
+                    const availabilityCell = row.querySelector("td:last-child");
+                    availabilityCell.textContent = "Alugado";
+                }
+            });
+
             hideRentPopover();  // Esconde o popover após o sucesso
-            clearAndReloadBooks();  // Atualiza a tabela de livros
         } else {
             const res = await response.json();
             alert(res.data);
         }
     } catch (error) {
-        
-        
-console.error('Erro ao alugar o livro:', error);
+        console.error('Erro ao alugar o livro:', error);
     }
 }
-
 
 async function returnBook(rentalId) {
     try {
