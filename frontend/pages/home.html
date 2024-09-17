@@ -1,43 +1,194 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=SUSE:wght@100..800&display=swap" rel="stylesheet">
-    <link rel="shortcut icon" type="imagex/png" href="../img/images.jpg">
-    <link rel="stylesheet" href="../css/home.css">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=SUSE:wght@100..800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="shortcut icon" type="imagex/png" href="../img/images.jpg" />
+    <link rel="stylesheet" href="../css/homenazaria.css" />
     <title>Home Nazária</title>
-</head>
-<body>
-    <header>
-        <nav id='menu'>
-            <input type='checkbox' id='responsive-menu' onclick='updatemenu()'><label></label>
+  </head>
+  <body>
+    <nav id='menu'>
+      <input type='checkbox' id='responsive-menu' onclick='updatemenu()'><label></label>
+      <ul>
+        <li><a href='home.html'>Home</a></li>
+        <li><a class='dropdown-arrow' href='http://'>Livros</a>
+          <ul class='sub-menus'>
+            <li><a href='http://'>Alugar</a></li>
+            <li><a href='http://'>Devolver</a></li>
+            <li><a href='http://'>Funcionários</a></li>
+          </ul>
+        </li>
+        <li><a href='http://'>Contate-nos</a></li>
+        <li><a href='http://'>Sobre</a></li>
+        </li>
+        <li><a class='dropdown-arrow' href='http://'>Membros</a>
+          <ul class='sub-menus'>
+            <li><a href='perfil.html'>Perfil</a></li>
+            <li><a href='http://'>Livros Alugados</a></li>
+            <li><a href='http://'>Multas</a></li>
+            <li><a href="hhtp://">Sair</a></li>
+          </ul>
+      </ul>
+    </nav>
+    <h1>Biblioteca Názaria</h1>
+    <div class="container">
+      <main id="posts-conatiner">
+        <article class="post">
+          <img src="../img/nazariadistribuidora_cover.jpg" alt="Nazária" />
+          <h3 class="title"><a href="#">Ouvidoria</a></h3>
+          <p class="description">
+            A Ouvidoria é uma unidade criada para que o(a) cidadão(ã) possa
+            tirar dúvidas, enviar reclamações, denúncias, elogios e sugestçõs
+            relativas à Administração da Prefeitura e demais órgãos correlatos.
+          </p>
+          <p class="author">Por: Nazária Ouvidoria</p>
+          <a href="#">Leia mais</a>
+        </article>
+        <article class="post">
+          <img
+            src="../img/naz_castanhal-os7y4k0f2coc57ttqbcpepdo3zqmyket9a667jng1s-1024x346.png"
+            alt="Nazária"
+          />
+          <h3 class="title"><a href="#">Nazaria Distribuidora</a></h3>
+          <p class="description">
+            A Distribuidora Nazária é uma empresa especializada no fornecimento
+            de produtos em larga escala, atuando principalmente no setor de
+            distribuição de mercadorias. Seu objetivo é disponibilizar uma ampla
+            variedade de itens para diversos segmentos do mercado, como
+            alimentos, bebidas, produtos de higiene e limpeza, entre outros, com
+            uma abordagem voltada para a eficiência e a qualidade no
+            atendimento. Além disso, a Distribuidora Nazária se destaca pelo
+            compromisso de oferecer prazos de entrega ágeis e um suporte
+            eficiente, garantindo que os clientes possam contar com seus
+            serviços de forma contínua e segura.
+          </p>
+          <p class="author">Por: Nazária Distribuidora</p>
+          <a href="#">Leia mais</a>
+        </article>
+        <article class="post">
+          <img src="../img/Nazária.jpg" alt="Nazária Biblioteca" />
+          <h3 class="title"><a href="#">Nazária Biblioteca</a></h3>
+          <p class="description">
+            A Biblioteca Nazária é um espaço dedicado ao conhecimento e à
+            cultura, oferecendo uma vasta coleção de livros que abrange diversos
+            gêneros e áreas do saber. Desde obras literárias clássicas até
+            publicações contemporâneas, a biblioteca se propõe a atender
+            leitores de todas as idades e interesses, proporcionando um ambiente
+            acolhedor e inspirador para a leitura e o estudo. Com um acervo
+            organizado de forma acessível, a Nazária busca facilitar a busca por
+            informações e estimular o hábito da leitura. Além do acervo físico,
+            a Biblioteca Nazária oferece acesso a recursos digitais, como
+            e-books e periódicos online, permitindo que os leitores explorem o
+            conhecimento de forma moderna e prática. A instituição também
+            realiza atividades culturais, como clubes de leitura, palestras e
+            oficinas, fomentando o debate e a troca de ideias. Ao longo dos
+            anos, a Biblioteca Nazária se tornou um ponto de referência para a
+            comunidade, um lugar onde a educação e a cultura são celebradas e
+            incentivadas em um ambiente de constante aprendizado.
+          </p>
+          <p class="author">Por: Nazária Biblioteca</p>
+          <a href="#">Leia mais</a>
+        </article>
+        <article class="post">
+          <img src="../img/NazáriaTI.jpg" alt="Nazária TI" />
+          <h3 class="title"><a href="#">Nazária TI</a></h3>
+          <p class="description">
+            A Área de TI da Nazária é fundamental para garantir a eficiência e a
+            inovação dos serviços oferecidos. Com uma equipe de profissionais
+            desenvolvidos, essa área é responsável pelo desenvolvimento e pela
+            manutenção de sistemas que suportam as operações diárias, além de
+            garantir a segurança da informação e a integridade dos dados. A
+            tecnologia é utilizada para otimização de processos, como a gestão
+            do acervo e o atendimento ao público. Além disso, a Área de TI da
+            Nazária está sempre em busca de novas soluções e ferramentas que
+            possam aprimorar a interação com os leitores, como plataformas de
+            empréstimo online e aplicativos que permitem o acesso ao catálogo de
+            forma prática e intuitiva. O suporte técnico também é uma
+            prioridade, garantindo que todos os equipamentos e sistemas
+            funcionem de A equipe de TI colabora com outras áreas da biblioteca
+            para implementar projetos inovadores e promover atividades
+            tecnológicas, como workshops e palestras sobre temas atuais. Assim,
+            a Área de TI da Nazária não apenas sustenta as operações da
+            biblioteca, mas também desempenha um papel ativo na promoção da
+            cultura digital e no aprendizado contínuo na comunidade.
+          </p>
+          <p class="author">Por: Nazária TI</p>
+          <a href="#">Leia mais</a>
+        </article>
+        <article class="post">
+          <img src="../img/NazáriaMarketing.jpg" alt="Nazária" />
+          <h3 class="title"><a href="#">Nazária Marketing </a></h3>
+          <p class="description">
+            A Nazária Marketing é uma agência dedicada a desenvolver estratégias
+            criativas e eficazes para promover marcas e produtos no mercado. Com
+            uma equipe multidisciplinar, a agência combina conhecimento em
+            publicidade, design, e marketing digital para oferecer soluções
+            personalizadas que atendem às necessidades de seus clientes. A
+            Nazária Marketing busca entender profundamente o público-alvo e o
+            mercado em que seus clientes estão inseridos, permitindo a criação
+            de campanhas que realmente ressoam e geram resultados. Além de
+            trabalhar com campanhas publicitárias tradicionais, a Nazária
+            Marketing também se destaca no ambiente digital, utilizando
+            ferramentas como SEO, marketing de conteúdo e redes sociais para
+            aumentar a visibilidade e o engajamento das marcas. A agência está
+            sempre atualizada com as últimas tendências do mercado, garantindo
+            que suas estratégias sejam inovadoras e alinhadas às novas demandas
+            dos consumidores. A Nazária Marketing valoriza a transparência e a
+            comunicação com seus clientes, oferecendo relatórios detalhados
+            sobre o desempenho das campanhas e insights para otimização
+            contínua. Com um compromisso firme com a excelência e a
+            criatividade, a agência se posiciona como uma parceira estratégica
+            no crescimento e no fortalecimento da presença de marca de seus
+            clientes no mercado.
+          </p>
+          <p class="author">Por: Nazária Marketing</p>
+          <a href="#">Leia mais</a>
+        </article>
+      </main>
+      <aside id="sidebar">
+        <section id="search-bar">
+          <h4>Buscar</h4>
+          <form>
+            <input type="text" placeholder="Pesquise aqui!" />
+            <input type="submit" value="Buscar" />
+          </form>
+        </section>
+        <section id="categories">
+          <h4>Categorias</h4>
+          <nav>
             <ul>
-              <li><a href='http://'>Home</a></li>
-              <li><a class='dropdown-arrow' href='http://'>Livros</a>
-                <ul class='sub-menus'>
-                  <li><a href='http://'>Alugar</a></li>
-                  <li><a href='http://'>Devolver</a></li>
-                  <li><a href='http://'>Funcionários</a></li>
-                </ul>
-              </li>
-              <li><a href='http://'>Sobre</a></li>
-              <li><a class='dropdown-arrow' href='http://'>Membros</a>
-                <ul class='sub-menus'>
-                  <li><a href='perfil.html'>Perfil</a></li>
-                  <li><a href='http://'>Livros Alugados</a></li>
-                  <li><a href='http://'>Multas</a></li>
-                  <li><a href="hhtp://">Sair</a></li>
-                </ul>
-              </li>
-              <li><a href='http://'>Contate-nos</a></li>
+              <li><a href="#">TI</a></li>
+              <li><a href="#">Financeiro</a></li>
+              <li><a href="#">Jurídico</a></li>
+              <li><a href="#">Recursos Humanos</a></li>
+              <li><a href="#">Contabilidade</a></li>
+              <li><a href="#">Administração</a></li>
             </ul>
           </nav>
-    </header>
-    <main>
-        <h1>Só um teste boy</h1>
-    </main>
-</body>
+        </section>
+        <section id="tags">
+          <h4>Tags</h4>
+          <div id="tags-container">
+            <a href="#">Ouvidoria</a>
+            <a href="#">Distribuidora</a>
+            <a href="#">Biblioteca</a>
+            <a href="#">TI</a>
+            <a href="#">Marketing</a>
+          </div>
+        </section>
+      </aside>
+    </div>
+    <footer id="footer">
+      <h2>Nazária World</h2>
+      <p>Time de Águias, venha agora!</p>
+      <p>&copy; 2024 Nazária Distribuidora, Inc.</p>
+    </footer>
+  </body>
 </html>
