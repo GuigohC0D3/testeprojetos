@@ -1,6 +1,7 @@
 document.getElementById('refreshMembers').addEventListener('click', clearAndReloadMembers);
 document.getElementById('cancelDelete').addEventListener('click', hidePopover);
 
+
 // Função para apagar conteudo da tabela e regarregar a página
 function clearAndReloadMembers() {
     const tableBody = document.getElementById("membersTableBody");
@@ -10,12 +11,28 @@ function clearAndReloadMembers() {
 
 
 // Função para abrir o modal e preencher os campos com os dados do membro
-function openEditModal(memberId, currentName, currentEmail) {
-    document.getElementById('editMemberId').value = memberId;
-    document.getElementById('editName').value = currentName;
-    document.getElementById('editEmail').value = currentEmail;
-    document.getElementById('editMemberModal').style.display = 'block';
+function openEditModal(memberId, currentName, currentEmail, currentUsername, currentPassword, currentPhoneNumber) {
+    const editMemberId = document.getElementById('editMemberId');
+    const editName = document.getElementById('editName');
+    const editEmail = document.getElementById('editEmail');
+    const editUsername = document.getElementById('editUsername');
+    const editPassword = document.getElementById('editPassword');
+    const editPhonenumber = document.getElementById('editPhonenumber');
+
+    // Verifica se todos os elementos foram encontrados
+    if (editMemberId && editName && editEmail && editUsername && editPassword && editPhonenumber) {
+        editMemberId.value = memberId;
+        editName.value = currentName;
+        editEmail.value = currentEmail;
+        editUsername.value = currentUsername;
+        editPassword.value = currentPassword;
+        editPhonenumber.value = currentPhoneNumber;
+        document.getElementById('editMemberModal').style.display = 'block';
+    } else {
+        console.error("Um ou mais elementos do modal de edição não foram encontrados no DOM.");
+    }
 }
+
 
 function openDeletePopover(id) {
     const popoverDelete = document.getElementById('deleteMembersPopover')
@@ -41,27 +58,32 @@ async function saveUpdatedMember() {
     const name = document.getElementById('editName').value;
     const email = document.getElementById('editEmail').value;
     const member_id = document.getElementById('editMemberId').value;
+    const username = document.getElementById('editUsername').value;
+    const password = document.getElementById('editPassword').value;
+    const phonenumber = document.getElementById('editPhonenumber').value;
 
     try {
         const response = await fetch(`http://localhost:5000/members`, {
             method: 'PUT',
-            mode:  'cors' ,
+            mode: 'cors',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ id: member_id, name: name, email: email })
+            body: JSON.stringify({ id: member_id, name: name, email: email, username: username, password: password, phonenumber: phonenumber })
         });
 
         if (response.ok) {
             clearAndReloadMembers(); // Recarrega a lista de membros
             closeEditModal(); // Fecha o modal após salvar
         } else {
-            console.error('Erro ao atualizar membro.');
+            const errorText = await response.text();
+            console.error('Erro ao atualizar membro:', errorText);
         }
     } catch (error) {
         console.error('Erro ao atualizar membro:', error);
     }
 }
+
 // Função para fechar popover
 function hidePopover() {
     const popover = document.getElementById('addMembers');
@@ -114,6 +136,9 @@ async function deleteMember(member_id) {
 async function addMember() {
     const name = document.getElementById('nome').value;
     const email = document.getElementById('email').value;
+    const username = document.getElementById('username').value;
+    const password = document.getElementById('password').value;
+    const phonenumber = document.getElementById('phonenumber').value;
 
     // Desabilita o botão para evitar múltiplos envios
     const saveButton = document.getElementById('save');
@@ -125,7 +150,7 @@ async function addMember() {
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ name: name, email: email })
+            body: JSON.stringify({ name: name, email: email, username: username, password: password, phonenumber: phonenumber })
         });
 
         if (response.ok) {
@@ -141,6 +166,9 @@ async function addMember() {
         saveButton.disabled = false;
         document.getElementById('nome').value = '';
         document.getElementById('email').value = '';
+        document.getElementById('username').value = '';
+        document.getElementById('password').value = '';
+        document.getElementById('phonenumber').value = '';
     }
 }
 
@@ -172,13 +200,22 @@ async function getMembers() {
             const emailCell = document.createElement("td");
             emailCell.textContent = member[2];
 
+            const usernameCell = document.createElement("td");
+            usernameCell.textContent = member[3];
+
+            const passwordCell = document.createElement("td");
+            passwordCell.textContent = member[4];
+
+            const phonenumberCell = document.createElement("td");
+            phonenumberCell.textContent = member[5]
+
             const actionCell = document.createElement("td");
             
             // Botão para editar
             const editButton = document.createElement("button");
             editButton.textContent = "Editar";
             editButton.addEventListener('click', () => {
-                openEditModal(member[0], member[1], member[2]);
+                openEditModal(member[0], member[1], member[2], member[3], member[4], member[5]);
             });
 
             // Botão para deletar que abre o popover
@@ -194,6 +231,9 @@ async function getMembers() {
             row.appendChild(idCell);
             row.appendChild(nameCell);
             row.appendChild(emailCell);
+            row.appendChild(usernameCell);
+            row.appendChild(passwordCell);
+            row.appendChild(phonenumberCell);
             row.appendChild(actionCell);
 
             tableBody.appendChild(row);

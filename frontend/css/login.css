@@ -17,7 +17,7 @@ body {
     -ms-flex-pack: center;
     justify-content: center;
     min-height: 100vh;
-    background-image: url(../img/Nazária.jpg);
+    background-image: url(../img/2022-01-19.png);
     background-repeat: no-repeat;
     background-position: center;
     background-size: cover;
@@ -154,7 +154,7 @@ input[type="checkbox"] {
 }
 
 input:checked[type="checkbox"] {
-    background-color: #4586e7;
+    background-color: #28eb17;
 }
 input[type="checkbox"]:before {
     content: '';

@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/frontend/css/main.css">
-    <link rel="shortcut icon" type="imagex/png" href="../img/nazariadistribuidora_logo.jpg">
+    <link rel="shortcut icon" type="imagex/png" href="../img/images.jpg">
     <title>Membros</title>
 </head>
 <body>
@@ -90,6 +90,9 @@
                 <th>Id</th>
                 <th>Nome</th>
                 <th>Email</th>
+                <th>Username</th>
+                <th>Password</th>
+                <th>Phonenumber</th>
                 <th>Ações</th>
             </tr>
         </thead>
@@ -119,7 +122,7 @@
     <button popovertarget="addMembers">Adicionar membros</button>   
     <script src="../js/members.js"></script>
 
-    <!-- Modal para editar membros -->
+<!-- Modal para editar membros -->
 <div id="editMemberModal" style="display:none;">
     <h3>Editar Membro</h3>  
     <input type="text" readonly id="editMemberId">
@@ -127,8 +130,15 @@
     <input type="text" id="editName"><br>
     <label for="editEmail">Email:</label>
     <input type="email" id="editEmail"><br>
+    <label for="editUsername">Username:</label>
+    <input type="text" id="editUsername"><br>
+    <label for="editPassword">Password:</label>
+    <input type="password" id="editPassword"><br>
+    <label for="editPhonenumber">Phonenumber:</label>
+    <input type="text" id="editPhonenumber"><br>
     <button onclick="saveUpdatedMember()">Salvar Alterações</button>
     <button onclick="closeEditModal()">Cancelar</button>
 </div>
+
 </body> 
 </html>

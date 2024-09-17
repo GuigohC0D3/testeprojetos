@@ -6,8 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
     <link rel="stylesheet" href="../css/register.css">
-    <title>Registro</title>
-
+    <link rel="shortcut icon" type="imagex/png" href="../img/images.jpg">
+    <title>Registro Nazária</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -17,47 +17,48 @@
 </head>
 
 <body>
-    <div class="wrapper">
-        <form action="">
+    <div class="wrapper">   
+        <form id="registerForm">
             <h1>Registration</h1>
 
             <div class="input-box">
                 <div class="input-field">
-                    <input type="text" placeholder="Full name" reuired>
+                    <input type="text" id="name" placeholder="Full name" reuired>
                     <ion-icon class="fa fa-user"></ion-icon>
                 </div>
                 <div class="input-field">
-                    <input type="text" placeholder="Username" required>
+                    <input type="text" id="username" placeholder="Username" required>
                     <ion-icon class="fa fa-user"></ion-icon>
                 </div>
             </div>
             <div class="input-box">
                 <div class="input-field">
-                    <input type="email" placeholder="Email" reuired>
+                    <input type="email" id="email" placeholder="Email" reuired>
                     <ion-icon class="fa fa-envelope"></ion-icon>
                 </div>
                 <div class="input-field">
-                    <input type="number" placeholder="Phone number" required>
+                    <input type="phone" id="phonenumber" placeholder="Phone number" required>
                     <ion-icon class="fa fa-phone"></ion-icon>
                 </div>
                 <div class="input-field">
-                    <input type="password" placeholder="Password" required>
+                    <input type="password" id="password" placeholder="Password" required>
                     <ion-icon class="fa fa-lock"></ion-icon>
                 </div>
                 <div class="input-field">
-                    <input type="password" placeholder="Confirm Password" required>
+                    <input type="password" id="confirmPassword" placeholder="Confirm Password" required>
                     <ion-icon class="fa fa-lock"></ion-icon>
                 </div>
 
 
-                <label><input type="checkbox">I hereby declare that the above information provied is true and
+                <label><input type="checkbox" id="declaration">I hereby declare that the above information provied is true and
                     correct</label>
 
+                    <div id="errorMessage" style="color: red;"></div>
+
                 <button type="subimit" class="btn">Register</button>
-
-
         </form>
     </div>
+    <script src="../js/register.js"></script>
 </body>
 
 </html>

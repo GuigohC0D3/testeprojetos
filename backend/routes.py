@@ -20,7 +20,15 @@ def addMember():
         return jsonify({'data': 'Precisa de um nome', 'status': 500})
     if 'email' not in data:
         return jsonify({'data': 'Precisa de um email', 'status': 500})
-    return members.addMember(data['name'], data['email'])
+    if 'username' not in data:
+        return jsonify({'data': 'Precisa de um username', 'status': 500})
+    if 'password' not in data:
+        return jsonify({'data': 'Precisa de uma senha', 'status': 500})
+    if 'phonenumber' not in data:
+        return jsonify({'data': 'Precisa de um número de telefone', 'status': 500})
+    if 'name' not in data or 'email' not in data or 'username' not in data or 'password' not in data or 'phonenumber' not in data:
+        return jsonify({'error': 'Todos os campos são obrigatórios'}), 400
+    return members.addMember(data['name'], data['email'], data['username'], data['password'], data['phonenumber'])
 
 @main_bp.route('/members', methods=['DELETE'])
 @cross_origin()
@@ -46,20 +54,30 @@ def deleteMember():
 def updateMember():
     try:
         data = request.json
-        print(data)
+        print(data)  # Debug para verificar o que está sendo enviado
+
         if 'id' not in data:
             return jsonify({'data': 'Precisa de um id', 'status': 500})
         if 'name' not in data:
             return jsonify({'data': 'Precisa de um nome', 'status': 500})
         if 'email' not in data:
             return jsonify({'data': 'Precisa de um email', 'status': 500})
-        result = members.updateMember(data['id'],data['name'],data['email'])
+        if 'username' not in data:
+            return jsonify({'data': 'Precisa de um username', 'status': 500})
+        if 'password' not in data:
+            return jsonify({'data': 'Precisa de uma senha', 'status': 500})
+        if 'phonenumber' not in data:
+            return jsonify({'data': 'Precisa de um número de telefone', 'status': 500})
+
+        result = members.updateMember(data['id'], data['name'], data['email'], data['username'], data['password'], data['phonenumber'])
+
         if result:
             return jsonify({'message': 'Membro atualizado com sucesso!'}), 200
         else:
             return jsonify({'error': 'Erro ao atualizar membro'}), 500
     except Exception as e:
         return jsonify({'data': f'Erro ao atualizar membro: {str(e)}', 'status': 500})
+
 
  
         

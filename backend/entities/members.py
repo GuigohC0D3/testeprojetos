@@ -24,15 +24,15 @@ def get_members():
     else:
         return jsonify({'error': 'Erro ao conectar ao banco de dados'}), 500
 
-def addMember(name, email):
+def addMember(name, email, username, password, phonenumber):
     conn = connect_db()
     if conn:
         try:
             cur = conn.cursor()
             cur.execute("""
-                INSERT INTO members (name, email)
-                VALUES (%s, %s)
-            """, (name, email))
+                INSERT INTO members (name, email, username, password, phonenumber)
+                VALUES (%s, %s, %s, %s, %s)
+            """, (name, email, username, password, phonenumber))
             conn.commit()
             cur.close()
             conn.close()
@@ -62,16 +62,16 @@ def deleteMember(member_id):
     else:
         print("Não foi possível conectar ao banco de dados.")
 
-def updateMember(member_id, name, email):
+def updateMember(member_id, name, email, username, password, phonenumber):
     conn = connect_db()  # Conecte ao banco de dados
     if conn:
         try:
             cur = conn.cursor()
             cur.execute("""
                 UPDATE members
-                SET name = %s, email = %s
+                SET name = %s, email = %s, username = %s, password = %s, phonenumber = %s
                 WHERE member_id = %s;
-            """, (name, email, member_id))
+            """, (name, email, username, password, phonenumber, member_id))
             conn.commit()
             print("Membro atualizado com sucesso!")
             return True
@@ -80,6 +80,6 @@ def updateMember(member_id, name, email):
             return False
         finally:
             cur.close()
-            conn.close()  # Certifique-se de fechar a conexão
+            conn.close()
     else:
         print("Não foi possível conectar ao banco de dados.")

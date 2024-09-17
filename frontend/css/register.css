@@ -10,7 +10,7 @@ body {
     justify-content: center;
     align-items: center;
     min-height: 100vh;
-    background: url(../img/Nazária.jpg) no-repeat;
+    background: url(../img/2022-01-19.png) no-repeat;
     background-size: cover;
     background-position: center;
 }
@@ -22,7 +22,7 @@ body {
     box-shadow: 0 0 10px rgba(0, 0, 0, .2);
     backdrop-filter: blur(50px);
     border-radius: 20px;
-    color: #ffffff;
+    color: #000000;
     padding: 40px 35px 55px;
 }
 
@@ -55,13 +55,13 @@ body {
     border: 2px solid rgba(255, 255, 255, .2);
     outline: none;
     font-size: 16px;
-    color: #fff;
+    color: #000000;
     border-radius: 6px;
     padding: 15px 15px 15px 40px;
 }
 
 .input-box .input-field input::placeholder {
-    color: #fff;
+    color: #000000;
 }
 
 .input-box .input-field ion-icon {
@@ -84,7 +84,7 @@ body {
 }
 
 .wrapper .btn {
-    width: 100%;
+    width: 50%;
     height: 40px;
     border: none;
     outline: none;
@@ -92,9 +92,20 @@ body {
     box-shadow: 0 0 10px rgba(0, 0, 0, .1);
     cursor: pointer;
     font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     color: #000000;
     font-weight: 600;
     border: none;
+    margin-top: 20px;
+    margin-left: 24vh;
+}
+
+button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 input[type="checkbox"] {
@@ -115,7 +126,7 @@ input[type="checkbox"] {
 }
 
 input:checked[type="checkbox"] {
-    background-color: #3d66ec;
+    background-color: #28eb17;
 }
 
 input[type="checkbox"]:before {
