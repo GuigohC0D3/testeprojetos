@@ -40,7 +40,7 @@ h1 {
 #menu {
 	background: #1457CC;
 	height: 41px;
-	border-radius: 14px;
+	border-radius: 10px;
 }
 #menu ul, #menu li {
 	margin: 0 auto;
@@ -129,6 +129,10 @@ h1 {
 	#menu input:checked + label {color:#FFFFFF}
 	#menu input:checked + label:before {content:"\00d7"}
 	#menu input:checked ~ ul {display:block}
+}
+
+.nav-count {
+    margin-left: auto;
 }
 
 .container {
