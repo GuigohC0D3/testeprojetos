@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Histórico de Aluguéis</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <h1>Histórico de Aluguéis</h1>
+    <button id="refreshHistorico">Atualizar Histórico</button>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Membro ID</th>
+                <th>Livro ID</th>
+                <th>Título do Livro</th>
+                <th>Autor ID</th>
+                <th>Ano de Publicação</th>
+                <th>Gênero</th>
+                <th>Data de Aluguel</th>
+                <th>Data de Devolução</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody id="historicoTableBody">
+            <!-- Dados do histórico serão inseridos aqui -->
+        </tbody>
+    </table>
+</body>
+</html>

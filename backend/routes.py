@@ -2,6 +2,7 @@ from flask import Blueprint, jsonify, request
 from flask_cors import cross_origin, CORS
 import entities.members as members
 import entities.books as books
+import entities.historicos as historicos
 from math import ceil
 import entities.employee as employee
 main_bp = Blueprint('main', __name__)
@@ -197,3 +198,11 @@ def get_employee():
 @cross_origin()
 def return_book_route(rental_id):
     return books.return_book(rental_id)
+
+@main_bp.route('/historicos', methods=['GET'])
+def historicos():
+    try:
+        return get_historico()
+    except Exception as e:
+        print(f"Erro ao buscar histórico: {str(e)}")
+        return jsonify({'data': f'Erro ao buscar histórico: {str(e)}', 'status': 500}), 500
