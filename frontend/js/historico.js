@@ -1,34 +1,35 @@
-document.getElementById('refreshHistorico').addEventListener('click', loadHistorico);
+document.addEventListener('DOMContentLoaded', () => {
+    loadHistorico();
+});
 
-        async function loadHistorico() {
-            const url = 'http://localhost:5000/historico';
-            try {
-                const response = await fetch(url);
-                if (!response.ok) {
-                    throw new Error(`Erro ao buscar histórico. Status: ${response.status}`);
-                }
-                const json = await response.json();
-                const historico = json.historico;
+function loadHistorico() {
+    fetch('http://localhost:5000/books')
+        .then(response => response.json())
+        .then(data => {
+            if (data.historico) {
+                const historicoDiv = document.getElementById('historico');
+                historicoDiv.innerHTML = ''; // Limpa o conteúdo anterior
 
-                const tableBody = document.getElementById('historicoTableBody');
-                tableBody.innerHTML = '';
+                data.historico.forEach(item => {
+                    const rentalDate = new Date(item.rental_date);
+                    const returnDate = item.return_date ? new Date(item.return_date) : null;
+                    const today = new Date();
 
-                historico.forEach(item => {
-                    const row = document.createElement('tr');
+                    let statusMessage = `O membro ${item.member_id} alugou "${item.title}" no dia ${rentalDate.toLocaleDateString()} e entregou ${returnDate ? returnDate.toLocaleDateString() : 'não devolvido'}.`;
 
-                    Object.keys(item).forEach(key => {
-                        const cell = document.createElement('td');
-                        cell.textContent = item[key];
-                        row.appendChild(cell);
-                    });
+                    if (returnDate === null || returnDate > today) {
+                        statusMessage += ' Caso não entregue no dia, será cobrada uma multa.';
+                    }
 
-                    tableBody.appendChild(row);
+                    const p = document.createElement('p');
+                    p.textContent = statusMessage;
+                    historicoDiv.appendChild(p);
                 });
-            } catch (error) {
-                console.error('Erro ao carregar histórico:', error);
+            } else {
+                throw new Error('Erro ao buscar histórico.');
             }
-        }
-
-        window.onload = function () {
-            loadHistorico();
-        }
+        })
+        .catch(error => {
+            console.error('Erro ao carregar histórico:', error);
+        });
+}

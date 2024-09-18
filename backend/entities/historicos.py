@@ -10,7 +10,7 @@ def get_historico():
                CASE 
                    WHEN a.return_date IS NULL THEN 'Não devolvido'
                    ELSE 'Devolvido'
-               END AS status
+               END AS disponibilidade
         FROM alugueis a
         JOIN bibliotecas b ON a.book_id = b.book_id
     ''').fetchall()
