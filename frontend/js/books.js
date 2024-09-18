@@ -218,7 +218,7 @@ window.onload = fetchBooks;
 
 async function loadBooks() {
     try {
-        const response = await fetch('http://localhost:5000/livros', {
+        const response = await fetch('http://localhost:5000/books', {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -227,7 +227,7 @@ async function loadBooks() {
 
         const data = await response.json();
         if (response.ok) {
-            const books = data.data;
+            const books = data.books;  // Acessa a chave 'books'
 
             const tableBody = document.getElementById('booksTableBody');
             tableBody.innerHTML = ''; // Limpa a tabela antes de carregar os novos dados
@@ -242,7 +242,7 @@ async function loadBooks() {
                 titleCell.textContent = book.title;
 
                 const statusCell = document.createElement('td');
-                statusCell.textContent = book.status;
+                statusCell.textContent = book.disponibilidade;
 
                 row.appendChild(bookIdCell);
                 row.appendChild(titleCell);
@@ -251,12 +251,14 @@ async function loadBooks() {
                 tableBody.appendChild(row);
             });
         } else {
-            console.error('Erro ao carregar os livros:', data.data);
+            console.error('Erro ao carregar os livros:', data);
         }
     } catch (error) {
         console.error('Erro ao carregar os livros:', error);
     }
 }
+
+
 
 // Chame esta função quando a página carregar
 document.addEventListener('DOMContentLoaded', loadBooks);
@@ -329,7 +331,8 @@ async function getBooks() {
             throw new Error(`Erro ao buscar livros. Status: ${response.status}`);
         }
         const json = await response.json();
-        const books = json.books;
+        const books = json.books;  // Acessa a chave 'books' diretamente
+
         console.log("Livros recebidos:", books);  // Verifique os dados recebidos
 
         const tableBody = document.getElementById("booksTableBody");
@@ -360,7 +363,7 @@ async function getBooks() {
 
             const availabilityCell = document.createElement("td");
             availabilityCell.textContent = book.disponibilidade;
-            
+
             // Botão para editar
             const editButton = document.createElement("button");
             editButton.textContent = "Editar";
@@ -392,6 +395,7 @@ async function getBooks() {
         console.error('Erro ao buscar livros:', error);
     }
 }
+
 
 // Carregar os livros ao carregar a página
 window.onload = function () {
