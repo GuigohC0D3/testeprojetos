@@ -132,10 +132,10 @@ async function deleteBook(bookId) {
 async function confirmRentBook() {
     const memberId = document.getElementById('rentMemberId').value;
     const bookId = document.getElementById('rentBookId').value;
-    const returnDate = document.getElementById('returnDate').value;
     const rentalDate = document.getElementById('rentalDate').value;
+    const returnDate = document.getElementById('returnDate').value || null;  // Retorna null se o campo estiver vazio
 
-    if (!memberId || !bookId || !returnDate || !rentalDate) {
+    if (!memberId || !bookId || !rentalDate) {
         alert("Todos os campos são obrigatórios.");
         return;
     }
@@ -154,18 +154,18 @@ async function confirmRentBook() {
             })
         });
 
-        const res = await response.json(); // Obtenha o JSON da resposta
+        const res = await response.json();
 
         if (response.ok) {
-            alert(res.data || "Livro alugado com sucesso!"); // Exibe a mensagem de sucesso da resposta
+            alert(res.data || "Livro alugado com sucesso!");
 
-            // Atualizar o status de disponibilidade na tabela
+            // Atualizar a célula de disponibilidade para "Alugado" apenas para o livro alugado
             const rows = document.querySelectorAll("#booksTableBody tr");
             rows.forEach(row => {
                 const idCell = row.querySelector("td:first-child").textContent;
                 if (idCell == bookId) {
                     const availabilityCell = row.querySelector("td:last-child");
-                    availabilityCell.textContent = "Alugado";
+                    availabilityCell.textContent = "Alugado";  // Atualiza o status para "Alugado"
                 }
             });
 
@@ -179,6 +179,111 @@ async function confirmRentBook() {
     }
 }
 
+// Função para atualizar a disponibilidade com base no rentalId e a returnDate
+function updateBookAvailability(rentalId, bookId, returnDate) {
+    const rows = document.querySelectorAll("#booksTableBody tr");
+    rows.forEach(row => {
+        const idCell = row.querySelector("td:first-child").textContent;
+
+        if (idCell == bookId) {
+            const availabilityCell = row.querySelector("td:last-child");
+
+            if (returnDate === null || returnDate === "") {
+                console.log(`Livro com ID ${bookId} encontrado. Atualizando status para 'Alugado'.`);
+                availabilityCell.textContent = "Alugado";  // Sem data de devolução, o livro está alugado
+            } else {
+                console.log(`Livro com ID ${bookId} encontrado. Atualizando status para 'Disponível'.`);
+                availabilityCell.textContent = "Disponível";  // Com data de devolução, o livro está disponível
+            }
+        }
+    });
+}
+
+// Função para verificar e atualizar a disponibilidade do livro automaticamente
+async function checkBookAvailability(bookId) {
+    try {
+        const response = await fetch(`http://localhost:5000/check_availability/${bookId}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        });
+
+        const res = await response.json();
+
+        if (response.ok) {
+            const availability = res.availability;
+
+            // Atualiza o status na tabela do frontend
+            const rows = document.querySelectorAll("#booksTableBody tr");
+            rows.forEach(row => {
+                const idCell = row.querySelector("td:first-child").textContent;
+                if (idCell == bookId) {
+                    const availabilityCell = row.querySelector("td:last-child");
+                    availabilityCell.textContent = availability;
+                }
+            });
+        } else {
+            console.error(res.error || "Erro ao verificar disponibilidade.");
+        }
+    } catch (error) {
+        console.error('Erro ao verificar disponibilidade:', error);
+    }
+}
+
+// Chamada para verificar a disponibilidade de todos os livros ao carregar a página
+document.addEventListener('DOMContentLoaded', () => {
+    const bookIds = Array.from(document.querySelectorAll("#booksTableBody tr td:first-child")).map(td => td.textContent);
+    bookIds.forEach(bookId => checkBookAvailability(bookId));  // Verifica todos os livros na tabela
+});
+
+
+// Função que aluga o livro e atualiza o status de disponibilidade
+async function confirmRentBook() {
+    const memberId = document.getElementById('rentMemberId').value;
+    const bookId = document.getElementById('rentBookId').value;
+    const rentalDate = document.getElementById('rentalDate').value;
+    const returnDate = document.getElementById('returnDate').value || null;  // Retorna null se o campo estiver vazio
+
+    if (!memberId || !bookId || !rentalDate) {
+        alert("Todos os campos são obrigatórios.");
+        return;
+    }
+
+    try {
+        const response = await fetch('http://localhost:5000/alugueis', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                member_id: memberId,
+                book_id: bookId,
+                rental_date: rentalDate,
+                return_date: returnDate
+            })
+        });
+
+        const res = await response.json();
+
+        if (response.ok) {
+            alert(res.data || "Livro alugado com sucesso!");
+
+            const rentalId = res.rental_id;
+            const updatedAvailability = res.availability;
+
+            // Atualizar o status de disponibilidade na tabela usando o rentalId e returnDate
+            updateBookAvailability(rentalId, bookId, returnDate);
+
+            hideRentPopover();  // Esconde o popover após o sucesso
+        } else {
+            alert(res.data || "Erro ao alugar o livro.");
+        }
+    } catch (error) {
+        console.error('Erro ao alugar o livro:', error);
+        alert("Erro de conexão ou erro inesperado.");
+    }
+}
 async function fetchBooks() {
     try {
         const response = await fetch('http://localhost:5000/livros'); // Endpoint que retorna a lista de livros
@@ -395,7 +500,6 @@ async function getBooks() {
         console.error('Erro ao buscar livros:', error);
     }
 }
-
 
 // Carregar os livros ao carregar a página
 window.onload = function () {

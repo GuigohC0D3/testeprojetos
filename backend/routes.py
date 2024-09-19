@@ -5,6 +5,7 @@ import entities.historicos as historicos
 import entities.books as books
 from math import ceil
 import entities.employee as employee
+from datetime import datetime
 main_bp = Blueprint('main', __name__)
 
 CORS(main_bp, methods=['GET', 'POST', 'DELETE', 'PUT'])
@@ -156,24 +157,97 @@ def updateBook():
 
 @main_bp.route('/alugueis', methods=['POST'])
 @cross_origin()
-def createRent():
+def create_rental():
     try:
         data = request.json
-        print(f"Dados recebidos no POST /alugueis: {data}")  # Log dos dados recebidos
+        member_id = data.get('member_id')
+        book_id = data.get('book_id')
+        rental_date = data.get('rental_date')
+        return_date = data.get('return_date')
 
         # Verificação dos campos obrigatórios
-        if not all(key in data for key in ('member_id', 'book_id', 'rental_date', 'return_date')):
-            return jsonify({'data': 'Faltam campos obrigatórios.', 'status': 400})
+        if not member_id or not book_id or not rental_date:
+            return jsonify({"data": "Campos obrigatórios ausentes: member_id, book_id ou rental_date", 'status': 400}), 400
 
-        # Chamar a função de aluguel no books.py
-        result = books.rent_book(data['member_id'], data['book_id'], data['rental_date'], data['return_date'])
-        print(f"Resultado da função rent_book: {result}")  # Log do resultado do aluguel
+        # Se a data de devolução for None, o status de disponibilidade deve ser 'Alugado'
+        if not return_date:
+            disponibilidade = 'Alugado'
+        else:
+            disponibilidade = 'Disponível'
 
-        return jsonify(result), result['status']
+        # Função para realizar o aluguel no banco de dados
+        result = books.rent_book(member_id, book_id, rental_date, return_date)
+
+        if result:
+            return jsonify({'data': 'Aluguel realizado com sucesso!', 'status': 200}), 200
+        else:
+            return jsonify({'data': 'Erro ao realizar aluguel', 'status': 500}), 500
 
     except Exception as e:
-        print(f"Erro ao alugar livro: {str(e)}")
-        return jsonify({'data': f'Erro ao alugar livro: {str(e)}', 'status': 500}), 500
+        print(f"Erro ao criar aluguel: {str(e)}")
+        return jsonify({'data': f'Erro ao criar aluguel: {str(e)}', 'status': 500}), 500
+
+@main_bp.route('/return_rental/<int:rental_id>', methods=['PUT'])
+@cross_origin()
+def return_rental(rental_id):
+    try:
+        # Chama a função de devolução no `books.py`
+        result = books.return_book(rental_id)
+
+        if result['status'] == 200:
+            return jsonify({'data': 'Livro devolvido com sucesso!', 'status': 200}), 200
+        else:
+            return jsonify({'data': 'Erro ao devolver o livro', 'status': 500}), 500
+
+    except Exception as e:
+        print(f"Erro ao devolver o aluguel: {str(e)}")
+        return jsonify({'data': f'Erro ao devolver aluguel: {str(e)}', 'status': 500}), 500
+
+
+@main_bp.route('/check_availability/<int:book_id>', methods=['GET'])
+@cross_origin
+def check_availability(book_id):
+    # Função que verifica se a data de devolução já passou
+    rent_info = books.rent_book(book_id)  # Suponha que isso retorne as informações do aluguel do livro
+    if not rent_info:
+        return jsonify({"error": "Livro não encontrado."}), 404
+
+    return_date = rent_info.get('return_date')
+    availability = rent_info.get('availability')
+
+    # Verificar se o livro está alugado e se a data de devolução passou
+    if return_date and availability == 'Alugado':
+        current_date = datetime.now().date()
+        return_date_obj = datetime.strptime(return_date, '%Y-%m-%d').date()
+
+        if current_date > return_date_obj:
+            # Atualize o status de disponibilidade
+            books.rent_book(book_id, 'Disponível')
+            return jsonify({
+                'book_id': book_id,
+                'availability': 'Disponível',
+                'message': 'O livro está disponível, data de devolução já passou.'
+            })
+
+    return jsonify({
+        'book_id': book_id,
+        'availability': availability
+    })
+
+@main_bp.route('/return_book/<int:book_id>', methods=['PUT'])
+@cross_origin()
+def return_book(book_id):
+    try:
+        result = books.return_book(book_id)
+        
+        if result['status'] == 200:
+            return jsonify({'message': 'Livro devolvido com sucesso!'}), 200
+        else:
+            return jsonify({'error': 'Erro ao devolver o livro.'}), 500
+
+    except Exception as e:
+        print(f"Erro ao devolver o livro: {str(e)}")
+        return jsonify({'data': f'Erro ao devolver o livro: {str(e)}', 'status': 500}), 500
 
 
 # Rota para listar ou buscar aluguéis (GET)
@@ -209,3 +283,5 @@ def historicos():
     except Exception as e:
         print(f"Erro ao buscar histórico: {str(e)}")
         return jsonify({'data': f'Erro ao buscar histórico: {str(e)}', 'status': 500}), 500
+    
+

@@ -153,14 +153,8 @@ def rent_book(member_id, book_id, rental_date, return_date):
 
             print(f"Iniciando o aluguel para o livro {book_id} e membro {member_id}")
 
-            # Verificar se o livro já está alugado (verifica se o livro tem um return_date NULL)
-            cur.execute("""
-                SELECT COUNT(*) FROM alugueis WHERE book_id = %s AND return_date IS NULL;
-            """, (book_id,))
-            rented_count = cur.fetchone()[0]
-            print(f"Quantidade de alugueis ativos para o livro {book_id}: {rented_count}")
-
-            if rented_count > 0:
+            # Verificar se o livro já está alugado usando a função auxiliar
+            if is_book_rented(book_id):
                 print(f"Livro {book_id} já está alugado.")
                 return {'data': 'Este livro já está alugado e não pode ser alugado novamente até ser devolvido.', 'status': 400}
 
@@ -170,7 +164,7 @@ def rent_book(member_id, book_id, rental_date, return_date):
                 VALUES (%s, %s, %s, %s);
             """, (member_id, book_id, rental_date, return_date))
 
-            # Atualizar o status do livro para 'Alugado' na tabela de livros (caso haja essa coluna)
+            # Atualizar o status do livro para 'Alugado'
             cur.execute("""
                 UPDATE bibliotecas SET disponibilidade = 'Alugado' WHERE book_id = %s;
             """, (book_id,))
@@ -191,3 +185,57 @@ def rent_book(member_id, book_id, rental_date, return_date):
         print(f"Erro ao alugar livro no banco de dados: {str(e)}")
         return {'data': f"Erro ao alugar livro: {str(e)}", 'status': 500}
 
+def return_book(book_id):
+    try:
+        conn = connect_db()
+        if conn:
+            cur = conn.cursor()
+
+            # Verificar se o livro está alugado (se existe um registro de aluguel sem data de devolução)
+            cur.execute("SELECT rental_id FROM alugueis WHERE book_id = %s AND return_date IS NULL;", (book_id,))
+            rental = cur.fetchone()
+
+            if rental:
+                # Atualizar a data de devolução
+                cur.execute("UPDATE alugueis SET return_date = NOW() WHERE rental_id = %s;", (rental[0],))
+                conn.commit()
+
+                # Atualizar a disponibilidade do livro para 'Disponível'
+                cur.execute("UPDATE bibliotecas SET disponibilidade = 'Disponível' WHERE book_id = %s;", (book_id,))
+                conn.commit()
+
+                cur.close()
+                conn.close()
+
+                print(f"Livro com ID {book_id} devolvido com sucesso!")
+                return {'data': 'Livro devolvido com sucesso!', 'status': 200}
+            else:
+                print(f"Livro com ID {book_id} já foi devolvido ou não estava alugado.")
+                return {'data': 'Livro já devolvido ou não está alugado.', 'status': 400}
+
+    except psycopg2.Error as e:
+        print(f"Erro ao devolver o livro no banco de dados: {str(e)}")
+        return {'data': f"Erro ao devolver o livro: {str(e)}", 'status': 500}
+
+    
+def is_book_rented(book_id):
+    conn = connect_db()
+    if conn:
+        try:
+            cur = conn.cursor()
+            
+            # Verifica se o livro está alugado (return_date = NULL)
+            cur.execute("SELECT rental_id FROM alugueis WHERE book_id = %s AND return_date IS NULL;", (book_id,))
+            rental = cur.fetchone()
+            
+            cur.close()
+            conn.close()
+
+            # Retorna True se o livro estiver alugado
+            return rental is not None
+        except psycopg2.Error as e:
+            print(f"Erro ao verificar se o livro está alugado: {e}")
+            return False
+    else:
+        print("Erro ao conectar ao banco de dados.")
+        return False
