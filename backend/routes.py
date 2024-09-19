@@ -1,4 +1,4 @@
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, jsonify, request, session
 from flask_cors import cross_origin, CORS
 import entities.members as members
 import entities.historicos as historicos
@@ -273,15 +273,18 @@ def get_employee():
 def return_book_route(rental_id):
     return books.return_book(rental_id)
 
-@main_bp.route('/historico', methods=['GET'])
-def historicos():
-    try:
-        data = request.json
-        print(f"Dados recebidos no POST /alugueis: {data}") 
+from entities import historicos
 
-        return historicos.get_historico()
+@main_bp.route('/historico', methods=['GET'])
+@cross_origin()
+def historico_route():
+    try:
+        # Obtendo o histórico a partir da função no arquivo `historicos.py`
+        historico = historicos.get_historico()
+        return jsonify(historico), 200
+
     except Exception as e:
         print(f"Erro ao buscar histórico: {str(e)}")
         return jsonify({'data': f'Erro ao buscar histórico: {str(e)}', 'status': 500}), 500
-    
 
+    
