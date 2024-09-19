@@ -1,36 +1,31 @@
-async function loadHistorico() {
-    try {
-        const response = await fetch('http://localhost:5000/alugueis');
+ // Função para carregar o histórico do backend
+        async function carregarHistorico() {
+            try {
+                const response = await fetch('http://localhost:5000/alugueis');
+                const data = await response.json();
 
-        if (!response.ok) {
-            throw new Error(`Erro ao buscar histórico. Status: ${response.status}`);
+                // Seleciona o container onde as mensagens serão exibidas
+                const historicoContainer = document.getElementById('historico-container');
+
+                // Limpa o container antes de inserir novas mensagens
+                historicoContainer.innerHTML = '';
+
+                // Percorre cada item do histórico e exibe a mensagem
+                data.forEach(item => {
+                    const message = `${item.member} alugou "${item.title}" no dia ${item.rental_date} e entregou ${item.return_date || 'ainda não foi entregue'}.`;
+                    
+                    // Cria um elemento div para cada mensagem
+                    const messageDiv = document.createElement('div');
+                    messageDiv.classList.add('message');
+                    messageDiv.textContent = message;
+
+                    // Adiciona a mensagem ao container
+                    historicoContainer.appendChild(messageDiv);
+                });
+            } catch (error) {
+                console.error('Erro ao carregar o histórico:', error);
+            }
         }
 
-        const data = await response.json();
-
-        if (data.historico) {
-            const historicoDiv = document.getElementById('historico');
-            historicoDiv.innerHTML = ''; // Limpa o conteúdo anterior
-
-            data.historico.forEach(item => {
-                const rentalDate = new Date(item.rental_date);
-                const returnDate = item.return_date ? new Date(item.return_date) : null;
-                const today = new Date();
-
-                let statusMessage = `O membro ${item.member_id} alugou "${item.title}" no dia ${rentalDate.toLocaleDateString()} e entregar ${returnDate ? returnDate.toLocaleDateString() : 'não devolvido'}.`;
-
-                if (!returnDate || returnDate > today) {
-                    statusMessage += ' Caso não entregue no dia, será cobrada uma multa.';
-                }
-
-                const p = document.createElement('p');
-                p.textContent = statusMessage;
-                historicoDiv.appendChild(p);
-            });
-        } else {
-            throw new Error('Erro ao buscar histórico: dados não encontrados.');
-        }
-    } catch (error) {
-        console.error('Erro ao carregar histórico:', error);
-    }
-}
+        // Chama a função ao carregar a página
+        window.onload = carregarHistorico;
