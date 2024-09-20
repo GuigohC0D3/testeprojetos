@@ -311,5 +311,14 @@ def login():
             return redirect(url_for('main.profile'))  # Redireciona para a página de perfil após o login
         else:
             return render_template('login.html', error="Usuário ou senha incorretos.")
-
     return render_template('login.html')  # Renderiza o template de login
+
+@main_bp.route('/profile')
+def profile():
+    if 'user_id' not in session:  # Verifica se o usuário está logado
+        return redirect(url_for('main.login'))  # Redireciona para login se não estiver logado
+    
+    # Você pode buscar mais informações sobre o usuário com base no user_id
+    user_info = members.get_user_by_id(session['user_id'])
+    
+    return render_template('profile.html', user=user_info)

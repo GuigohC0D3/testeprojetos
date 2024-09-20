@@ -83,3 +83,28 @@ def updateMember(member_id, name, email, username, password, phonenumber):
             conn.close()
     else:
         print("Não foi possível conectar ao banco de dados.")
+    
+
+def execute_query(query, params):
+    conn = connect_db()
+    try:
+        with conn.cursor() as cursor:
+            cursor.execute(query, params)
+            result = cursor.fetchall()
+        conn.commit()
+    except Exception as e:
+        print(f"Erro ao executar a query: {e}")
+        result = None
+    finally:
+        conn.close()
+    return result
+
+def check_credentials(username, password):
+    # Verifica se o usuário existe no banco de dados
+    query = "SELECT * FROM members WHERE username = %s AND password = %s"
+    # Execute a query no banco de dados e retorne o resultado (hash de senha recomendado)
+    result = execute_query(query, (username, password))  # Use hashing/salting para senha real!
+    
+    if result:
+        return result[0]  # Retorna os dados do usuário
+    return None
