@@ -1,11 +1,11 @@
 from flask import Blueprint, jsonify, request, session
 from flask_cors import cross_origin, CORS
-import entities.members as members
-import entities.historicos as historicos
-import entities.books as books
 from math import ceil
-import entities.employee as employee
 from datetime import datetime
+from .entities import members
+from .entities import historicos
+from .entities import books
+from .entities import employee
 main_bp = Blueprint('main', __name__)
 
 CORS(main_bp, methods=['GET', 'POST', 'DELETE', 'PUT'])
@@ -273,7 +273,7 @@ def get_employee():
 def return_book_route(rental_id):
     return books.return_book(rental_id)
 
-from entities import historicos
+
 
 @main_bp.route('/historico', methods=['GET'])
 @cross_origin()

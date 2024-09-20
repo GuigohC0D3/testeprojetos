@@ -1,5 +1,5 @@
 import psycopg2
-from connection.config import connect_db
+from ..connection.config import connect_db
 from flask import request, jsonify
 from psycopg2 import sql
 import logging
