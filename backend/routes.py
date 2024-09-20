@@ -1,5 +1,6 @@
 from flask import Blueprint, jsonify, request, session, render_template, url_for, redirect
 from flask_cors import cross_origin, CORS
+from jinja2 import Template
 from math import ceil
 from datetime import datetime
 from .entities import members
@@ -290,9 +291,12 @@ def historico_route():
 @main_bp.route('/home')
 @cross_origin()
 def home():
-    # Supondo que você use `session` para verificar se o usuário está logado
-    logged_in = 'user_id' in session  # Verifica se o usuário está logado
-    return render_template('home.html', logged_in=logged_in)  # Renderiza home.html com o valor de `logged_in`
+    if 'username' in session:
+        username = session['username']  # O usuário está logado
+        return render_template('home.html', logged_in=True, username=username)
+    else:
+        return render_template('home.html', logged_in=False)
+
 
 
 @main_bp.route('/login', methods=['GET', 'POST'])
@@ -308,7 +312,7 @@ def login():
             # Se as credenciais forem corretas, armazena os dados do usuário na sessão
             session['user_id'] = user['id']
             session['username'] = user['username']
-            return redirect(url_for('main.profile'))  # Redireciona para a página de perfil após o login
+            return redirect(url_for('perfil.html'))  # Redireciona para a página de perfil após o login
         else:
             return render_template('login.html', error="Usuário ou senha incorretos.")
     return render_template('login.html')  # Renderiza o template de login
@@ -321,4 +325,4 @@ def profile():
     # Você pode buscar mais informações sobre o usuário com base no user_id
     user_info = members.get_user_by_id(session['user_id'])
     
-    return render_template('profile.html', user=user_info)
+    return render_template('perfil.html', user=user_info)
