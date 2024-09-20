@@ -1,4 +1,4 @@
-from flask import Blueprint, jsonify, request, session
+from flask import Blueprint, jsonify, request, session, render_template, url_for, redirect
 from flask_cors import cross_origin, CORS
 from math import ceil
 from datetime import datetime
@@ -287,4 +287,29 @@ def historico_route():
         print(f"Erro ao buscar histórico: {str(e)}")
         return jsonify({'data': f'Erro ao buscar histórico: {str(e)}', 'status': 500}), 500
 
-    
+@main_bp.route('/home')
+@cross_origin()
+def home():
+    # Supondo que você use `session` para verificar se o usuário está logado
+    logged_in = 'user_id' in session  # Verifica se o usuário está logado
+    return render_template('home.html', logged_in=logged_in)  # Renderiza home.html com o valor de `logged_in`
+
+
+@main_bp.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+
+        # Função que verifica as credenciais (você precisa criar isso no arquivo `members.py`)
+        user = members.check_credentials(username, password)
+        
+        if user:
+            # Se as credenciais forem corretas, armazena os dados do usuário na sessão
+            session['user_id'] = user['id']
+            session['username'] = user['username']
+            return redirect(url_for('main.profile'))  # Redireciona para a página de perfil após o login
+        else:
+            return render_template('login.html', error="Usuário ou senha incorretos.")
+
+    return render_template('login.html')  # Renderiza o template de login

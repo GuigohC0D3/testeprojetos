@@ -14,31 +14,46 @@
     <title>Home Nazária</title>
   </head>
   <body>
-    <nav id='menu'>
-      <input type='checkbox' id='responsive-menu' onclick='updatemenu()'><label></label>
+    <nav id="menu">
+      <input
+        type="checkbox"
+        id="responsive-menu"
+        onclick="updatemenu()"
+      /><label></label>
       <ul>
-        <li><a href='home.html'>Home</a></li>
-        <li><a class='dropdown-arrow' href='http://'>Livros</a>
-          <ul class='sub-menus'>
-            <li><a href='http://'>Alugar</a></li>
-            <li><a href='http://'>Devolver</a></li>
-            <li><a href='http://'>Funcionários</a></li>
+        <li><a href="{{ url_for('home') }}">Home</a></li>
+        <li>
+          <a class="dropdown-arrow" href="#">Livros</a>
+          <ul class="sub-menus">
+            <li><a href="#">Alugar</a></li>
+            <li><a href="#">Devolver</a></li>
+            <li><a href="#">Funcionários</a></li>
           </ul>
         </li>
-        <li><a href='http://'>Contate-nos</a></li>
-        <li><a href='http://'>Sobre</a></li>
-        </li>
-        <li><a class='dropdown-arrow' href='http://'>Membros</a>
-          <ul class='sub-menus'>
-            <li><a href='perfil.html'>Perfil</a></li>
-            <li><a href='http://'>Livros Alugados</a></li>
-            <li><a href='http://'>Multas</a></li>
-            <li><a href="hhtp://">Sair</a></li>
+        <li><a href="#">Contate-nos</a></li>
+        <li><a href="#">Sobre</a></li>
+
+        {% if logged_in %}
+        <!-- Menu para usuários logados -->
+        <li>
+          <a class="dropdown-arrow" href="#">Membros</a>
+          <ul class="sub-menus">
+            <li><a href="{{ url_for('perfil') }}">Perfil</a></li>
+            <li><a href="#">Livros Alugados</a></li>
+            <li><a href="#">Multas</a></li>
+            <li><a href="{{ url_for('logout') }}">Sair</a></li>
           </ul>
-          <li><a href="login.html" class="nav-count">Login</a></li>
-          <li><a href="register.html" class="nav-count">Registra-se</a></li>
+        </li>
+        {% else %}
+        <!-- Menu para usuários não logados -->
+        <li><a href="{{ url_for('login') }}" class="nav-count">Login</a></li>
+        <li>
+          <a href="{{ url_for('register') }}" class="nav-count">Registrar-se</a>
+        </li>
+        {% endif %}
       </ul>
     </nav>
+
     <h1>Biblioteca Názaria</h1>
     <div class="container">
       <main id="posts-conatiner">
