@@ -7,6 +7,7 @@ from .entities import members
 from .entities import historicos
 from .entities import books
 from .entities import employee
+from .entities import login
 from .connection.config import connect_db 
 import os
 main_bp = Blueprint('main', __name__)
@@ -295,9 +296,6 @@ def historico_route():
         print(f"Erro ao buscar histórico: {str(e)}")
         return jsonify({'data': f'Erro ao buscar histórico: {str(e)}', 'status': 500}), 500
 
-@main_bp.route('/login', methods=['GET'])
-def login():
-    return render_template('login.html')  # Certifique-se de que o caminho de login.html esteja correto
 
 @main_bp.route('/login', methods=['POST'])
 def login_post():
@@ -314,3 +312,25 @@ def login_post():
     # Loga o usuário
     login_user(user, remember=remember)
     return jsonify({'success': True, 'redirect_url': url_for('main_bp.profile')})
+
+@main_bp.route('/login', methods=['GET'])
+@cross_origin()
+def login_route():
+    try:
+        # Obter os dados do usuário (e-mail ou username) da requisição, por exemplo, de query params
+        email_or_username = request.args.get('email_or_username')
+
+        if not email_or_username:
+            return jsonify({'data': 'Email ou username não fornecido', 'status': 400}), 400
+        
+        # Agora chama a função correta para buscar o usuário pelo email ou username
+        user = login.get_user_by_email_or_username(email_or_username)
+
+        if user:
+            return jsonify(user), 200
+        else:
+            return jsonify({'data': 'Usuário não encontrado', 'status': 404}), 404
+
+    except Exception as e:
+        print(f"Erro ao buscar login: {str(e)}")
+        return jsonify({'data': f'Erro ao buscar login: {str(e)}', 'status': 500}), 500

@@ -25,7 +25,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify({ username: usernameOrEmail, password: password })
+                    body: JSON.stringify({emai: email, username: username, password: password })
                 });
 
                 if (response.ok) {
