@@ -3,7 +3,7 @@ from ..connection.config import connect_db
 from flask import request, jsonify
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from psycopg2 import sql
-
+from werkzeug.security import check_password_hash
 
 
 def get_members():
@@ -102,35 +102,28 @@ def execute_query(query, params):
         conn.close()
     return result
 
-def check_credentials(email, password):
+def check_credentials(email_or_username, password):
     conn = connect_db()
     if conn:
         try:
             cur = conn.cursor()
-            query = "SELECT * FROM members WHERE email = %s AND password = %s"
-            cur.execute(query, (email, password))  # Lembre-se de usar hashing/salting de senha na prática
+            query = """
+                SELECT * FROM members WHERE (email = %s OR username = %s) AND password = %s
+            """
+            cur.execute(query, (email_or_username, email_or_username, password))
             user = cur.fetchone()
             cur.close()
             conn.close()
             
             if user:
                 return {
-                    'member_id': user[0],  # Assumindo que a primeira coluna é o ID
-                    'name': user[1],       # Ajuste os índices conforme necessário
+                    'member_id': user[0],
+                    'name': user[1],
                     'email': user[2]
                 }
         except psycopg2.Error as e:
             print(f"Erro ao verificar credenciais: {e}")
             return None
-    return None
-
-#Função para chekar a senha
-def check_password_hash(password):
-    query = "SELECT * FROM members WHERE password = %s"
-    result = execute_query(query, (password))
-
-    if result:
-        return[0]
     return None
 
 def get_user_by_email(email):
@@ -144,21 +137,25 @@ def get_user_by_email(email):
 def load_user(member_id):
     return get_members(member_id) 
 
-def get_user_by_id(member_id):
+def get_user_by_email_or_username(email_or_username):
     conn = connect_db()
-    cur = conn.cursor()
-
-    cur.execute("SELECT id, email, celular, cpf FROM members WHERE id = %s", (member_id,))
-    result = cur.fetchone()
-    
-    if result:
-        # Utilizamos o UserMixin para adicionar os métodos de autenticação
-        user = UserMixin()
-        user.id = result[0]
-        user.email = result[1]
-        user.celular = result[2]
-        user.cpf = result[3]
-        return user
+    if conn:
+        try:
+            cur = conn.cursor()
+            query = """
+            SELECT id, name, email, username, password_hash 
+            FROM members 
+            WHERE email = %s OR username = %s
+            """
+            cur.execute(query, (email_or_username, email_or_username))
+            user = cur.fetchone()
+            if user:
+                # Retorne um objeto de usuário com os atributos que o Flask-Login espera
+                return UserMixin(user[0], user[1], user[2], user[3], user[4])  # Supondo que tenha essas colunas
+            cur.close()
+            conn.close()
+        except psycopg2.Error as e:
+            print(f"Erro ao buscar o usuário: {e}")
     return None
 
 # Função para autenticar o usuário
@@ -177,3 +174,7 @@ def authenticate_user(email, password):
         user.celular = result[2]
         user.cpf = result[3]
         return user  # Retorna o usuário autenticado
+    
+
+def check_password_hash(stored_password, provided_password):
+    return check_password_hash(stored_password, provided_password)

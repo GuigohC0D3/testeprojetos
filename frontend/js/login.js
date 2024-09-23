@@ -1,41 +1,46 @@
-document.getElementById("loginForm").addEventListener("submit", async function(event) {
-    event.preventDefault(); // Evita o reload da página
+document.addEventListener('DOMContentLoaded', function() {
+    const loginForm = document.getElementById('loginForm');
 
-    const username = document.getElementById("email").value;
-    const password = document.getElementById("password").value;
+    if (loginForm) {
+        loginForm.addEventListener('submit', async function(event) {
+            event.preventDefault(); // Evita o envio tradicional do formulário
 
-    // Faz a requisição para o backend
-    const response = await fetch("/login", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ username, password })
-    });
+            // Pega os valores dos inputs
+            const usernameOrEmail = document.getElementById('email_or_username').value;
+            const password = document.getElementById('password').value;
 
-    const result = await response.json();
+            // Validação simples no frontend
+            if (!usernameOrEmail || !password) {
+                document.getElementById('errorMessage').textContent = 'Por favor, preencha todos os campos.';
+                return;
+            }
 
-    if (result.success) {
-        // Redireciona para a página inicial após login bem-sucedido
-        window.location.href = "/home";
+            // Limpa a mensagem de erro
+            document.getElementById('errorMessage').textContent = '';
+
+            try {
+                // Envia os dados para o backend
+                const response = await fetch('http://localhost:5000/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ username: usernameOrEmail, password: password })
+                });
+
+                if (response.ok) {
+                    // Redireciona o usuário para a página inicial após o login bem-sucedido
+                    window.location.href = '/home';
+                } else {
+                    const errorText = await response.text();
+                    document.getElementById('errorMessage').textContent = `Erro ao realizar login: ${errorText}`;
+                }
+            } catch (error) {
+                console.error('Erro ao realizar login:', error);
+                document.getElementById('errorMessage').textContent = 'Erro ao realizar login. Tente novamente mais tarde.';
+            }
+        });
     } else {
-        alert("Login falhou: " + result.message);
+        console.error('O formulário de login não foi encontrado.');
     }
-});
-
-
-window.onload = function() {
-    fetch('/login')  // Rota para obter os dados do usuário logado
-        .then(response => response.json())
-        .then(data => {
-            document.getElementById('userName').textContent = data.name;
-            document.getElementById('userCPF').textContent = data.cpf;
-            document.getElementById('userMobile').textContent = data.mobile;
-        })
-        .catch(error => console.error('Erro ao carregar dados do usuário:', error));
-};
-
-// Função para logout
-document.getElementById('logoutButton').addEventListener('click', function() {
-    window.location.href = '/logout';  // Redirecionar para logout
 });

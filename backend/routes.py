@@ -1,7 +1,6 @@
-from flask import Blueprint, jsonify, request, session, render_template, url_for, redirect
+from flask import Blueprint, jsonify, request, session, render_template, url_for, redirect, send_from_directory
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from flask_cors import cross_origin, CORS
-from jinja2 import Template
 from math import ceil
 from datetime import datetime
 from .entities import members
@@ -9,6 +8,7 @@ from .entities import historicos
 from .entities import books
 from .entities import employee
 from .connection.config import connect_db 
+import os
 main_bp = Blueprint('main', __name__)
 main_bp.secret_key = 'b2d79f7202d194fc6de942abc1297eeb44d5f4e5'
 
@@ -295,41 +295,22 @@ def historico_route():
         print(f"Erro ao buscar histórico: {str(e)}")
         return jsonify({'data': f'Erro ao buscar histórico: {str(e)}', 'status': 500}), 500
 
-@main_bp.route('/home')
-@cross_origin()
-def home():
-    if 'username' in session:
-        username = session['username']  # O usuário está logado
-        return render_template('home.html', logged_in=True, username=username)
-    else:
-        return render_template('home.html', logged_in=False)
-
-
-
-@main_bp.route('/login', methods=['GET', 'POST'])
+@main_bp.route('/login', methods=['GET'])
 def login():
-    if request.method == 'POST':
-        email = request.form['email']
-        password = request.form['password']
+    return render_template('login.html')  # Certifique-se de que o caminho de login.html esteja correto
 
-        # Função que verifica as credenciais (você precisa criar isso no arquivo `members.py`)
-        user = members.check_credentials(email, password)
-        
-        if user:
-            # Se as credenciais forem corretas, armazena os dados do usuário na sessão
-            session['member_id'] = user['id']
-            session['email'] = email['email']
-            return redirect(url_for('perfil.html'))  # Redireciona para a página de perfil após o login
-        else:
-            return render_template('login.html', error="Usuário ou senha incorretos.")
-    return render_template('login.html')  # Renderiza o template de login
+@main_bp.route('/login', methods=['POST'])
+def login_post():
+    email = request.json.get('email')  # Usando JSON ao invés de form
+    password = request.json.get('password')
+    remember = request.json.get('remember', False)  # Definir o valor de remember, se disponível
 
-@main_bp.route('/profile')
-def profile():
-    if 'user_id' not in session:  # Verifica se o usuário está logado
-        return redirect(url_for('main.login'))  # Redireciona para login se não estiver logado
-    
-    # Você pode buscar mais informações sobre o usuário com base no user_id
-    user_info = members.get_user_by_id(session['user_id'])
-    
-    return render_template('perfil.html', user=user_info)
+    user = members.query.filter_by(email=email).first()
+
+    # Valida se o usuário existe e a senha está correta
+    if not user or not members.check_password_hash(user.password, password):
+        return jsonify({'success': False, 'message': 'Credenciais incorretas.'}), 401
+
+    # Loga o usuário
+    login_user(user, remember=remember)
+    return jsonify({'success': True, 'redirect_url': url_for('main_bp.profile')})
