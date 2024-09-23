@@ -1,4 +1,5 @@
 from flask import Blueprint, jsonify, request, session, render_template, url_for, redirect
+from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from flask_cors import cross_origin, CORS
 from jinja2 import Template
 from math import ceil
@@ -7,7 +8,13 @@ from .entities import members
 from .entities import historicos
 from .entities import books
 from .entities import employee
+from .connection.config import connect_db 
 main_bp = Blueprint('main', __name__)
+main_bp.secret_key = 'b2d79f7202d194fc6de942abc1297eeb44d5f4e5'
+
+login_manager = LoginManager()
+login_manager.init_app(main_bp)
+login_manager.login_view = 'login'  # Redireciona para a rota de login quando não autenticado
 
 CORS(main_bp, methods=['GET', 'POST', 'DELETE', 'PUT'])
 
@@ -302,16 +309,16 @@ def home():
 @main_bp.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
-        username = request.form['username']
+        email = request.form['email']
         password = request.form['password']
 
         # Função que verifica as credenciais (você precisa criar isso no arquivo `members.py`)
-        user = members.check_credentials(username, password)
+        user = members.check_credentials(email, password)
         
         if user:
             # Se as credenciais forem corretas, armazena os dados do usuário na sessão
-            session['user_id'] = user['id']
-            session['username'] = user['username']
+            session['member_id'] = user['id']
+            session['email'] = email['email']
             return redirect(url_for('perfil.html'))  # Redireciona para a página de perfil após o login
         else:
             return render_template('login.html', error="Usuário ou senha incorretos.")

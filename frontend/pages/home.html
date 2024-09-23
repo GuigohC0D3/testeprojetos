@@ -15,16 +15,6 @@
   </head>
   <body>
     <h1>Bem-vindo ao Sistema de Gestão!</h1>
-    
-    {% if logged_in %}
-        <p>Olá, {{ username }}! Você está logado.</p>
-        <a href="{{ url_for('perfil') }}">Acessar Perfil</a>
-        <a href="{{ url_for('logout') }}">Logout</a>
-    {% else %}
-        <p>Bem-vindo, visitante! Faça login ou registre-se para acessar mais funcionalidades.</p>
-        <a href="{{ url_for('login') }}">Login</a>
-        <a href="{{ url_for('registro') }}">Registrar</a>
-    {% endif %}
     <nav id="menu">
       <input
         type="checkbox"
@@ -43,25 +33,21 @@
         </li>
         <li><a href="#">Contate-nos</a></li>
         <li><a href="#">Sobre</a></li>
-
-        {% if logged_in %}
         <!-- Menu para usuários logados -->
         <li>
           <a class="dropdown-arrow" href="#">Membros</a>
           <ul class="sub-menus">
-            <li><a href="{{ url_for('perfil') }}">Perfil</a></li>
+            <li><a href="perfil.html">Perfil</a></li>
             <li><a href="#">Livros Alugados</a></li>
             <li><a href="#">Multas</a></li>
-            <li><a href="{{ url_for('logout') }}">Sair</a></li>
+            <li><a href="logout.html">Sair</a></li>
           </ul>
         </li>
-        {% else %}
         <!-- Menu para usuários não logados -->
         <li><a href="login.html" class="nav-count">Login</a></li>
         <li>
           <a href="register.html" class="nav-count">Registrar-se</a>
         </li>
-        {% endif %}
       </ul>
     </nav>
 

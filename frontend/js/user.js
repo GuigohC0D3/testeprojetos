@@ -78,3 +78,22 @@ document.getElementeById('mobile').addEventListener('input', function(e) {
                              .replace((/(\d)(\d{4})$/,"$1-$2"));
     e.target.value = mobilePattern;
 })
+
+ // Função para buscar dados do usuário logado
+ function getUserInfo() {
+    fetch('/user-info')
+        .then(response => response.json())  // Converte a resposta para JSON
+        .then(data => {
+            if (data.error) {
+                alert(data.error);  // Exibe uma mensagem de erro se o usuário não estiver logado
+            } else {
+                // Preenche os campos com as informações do usuário
+                document.getElementById('user-name').textContent = data.name;
+                document.getElementById('user-cpf').textContent = data.cpf;
+                document.getElementById('user-mobile').textContent = data.mobile;
+            }
+        })
+        .catch(error => console.error('Erro ao buscar dados do usuário:', error));
+}
+
+window.onload = getUserInfo;

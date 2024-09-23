@@ -1,7 +1,10 @@
 import psycopg2
 from ..connection.config import connect_db
 from flask import request, jsonify
+from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from psycopg2 import sql
+
+
 
 def get_members():
     conn = connect_db()
@@ -99,12 +102,78 @@ def execute_query(query, params):
         conn.close()
     return result
 
-def check_credentials(username, password):
-    # Verifica se o usuário existe no banco de dados
-    query = "SELECT * FROM members WHERE username = %s AND password = %s"
-    # Execute a query no banco de dados e retorne o resultado (hash de senha recomendado)
-    result = execute_query(query, (username, password))  # Use hashing/salting para senha real!
+def check_credentials(email, password):
+    conn = connect_db()
+    if conn:
+        try:
+            cur = conn.cursor()
+            query = "SELECT * FROM members WHERE email = %s AND password = %s"
+            cur.execute(query, (email, password))  # Lembre-se de usar hashing/salting de senha na prática
+            user = cur.fetchone()
+            cur.close()
+            conn.close()
+            
+            if user:
+                return {
+                    'member_id': user[0],  # Assumindo que a primeira coluna é o ID
+                    'name': user[1],       # Ajuste os índices conforme necessário
+                    'email': user[2]
+                }
+        except psycopg2.Error as e:
+            print(f"Erro ao verificar credenciais: {e}")
+            return None
+    return None
+
+#Função para chekar a senha
+def check_password_hash(password):
+    query = "SELECT * FROM members WHERE password = %s"
+    result = execute_query(query, (password))
+
+    if result:
+        return[0]
+    return None
+
+def get_user_by_email(email):
+    conn = connect_db.connect()  # Conexão ao banco de dados
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM members WHERE email = %s", (email,))
+    members = cursor.fetchone()
+    conn.close()
+    return members
+
+def load_user(member_id):
+    return get_members(member_id) 
+
+def get_user_by_id(member_id):
+    conn = connect_db()
+    cur = conn.cursor()
+
+    cur.execute("SELECT id, email, celular, cpf FROM members WHERE id = %s", (member_id,))
+    result = cur.fetchone()
     
     if result:
-        return result[0]  # Retorna os dados do usuário
+        # Utilizamos o UserMixin para adicionar os métodos de autenticação
+        user = UserMixin()
+        user.id = result[0]
+        user.email = result[1]
+        user.celular = result[2]
+        user.cpf = result[3]
+        return user
     return None
+
+# Função para autenticar o usuário
+def authenticate_user(email, password):
+    conn = connect_db()
+    cur = conn.cursor()
+
+    # Busca o membro pelo email
+    cur.execute("SELECT id, email, celular, cpf, password_hash FROM members WHERE email = %s", (email,))
+    result = cur.fetchone()
+
+    if result and check_password_hash(result[4], password):  # Verifica o hash da senha
+        user = UserMixin()
+        user.id = result[0]
+        user.email = result[1]
+        user.celular = result[2]
+        user.cpf = result[3]
+        return user  # Retorna o usuário autenticado
