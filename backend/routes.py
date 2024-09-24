@@ -7,7 +7,7 @@ from .entities import members
 from .entities import historicos
 from .entities import books
 from .entities import employee
-from .entities import login
+from .entities import logins
 from .connection.config import connect_db 
 import os
 main_bp = Blueprint('main', __name__)
@@ -296,41 +296,37 @@ def historico_route():
         print(f"Erro ao buscar histórico: {str(e)}")
         return jsonify({'data': f'Erro ao buscar histórico: {str(e)}', 'status': 500}), 500
 
-
+# Rota de login
 @main_bp.route('/login', methods=['POST'])
-def login_post():
-    email = request.json.get('email')  # Usando JSON ao invés de form
-    password = request.json.get('password')
-    remember = request.json.get('remember', False)  # Definir o valor de remember, se disponível
-
-    user = members.query.filter_by(email=email).first()
-
-    # Valida se o usuário existe e a senha está correta
-    if not user or not members.check_password_hash(user.password, password):
-        return jsonify({'success': False, 'message': 'Credenciais incorretas.'}), 401
-
-    # Loga o usuário
-    login_user(user, remember=remember)
-    return jsonify({'success': True, 'redirect_url': url_for('main_bp.profile')})
-
-@main_bp.route('/login', methods=['GET'])
-@cross_origin()
-def login_route():
+def login():
     try:
-        # Obter os dados do usuário (e-mail ou username) da requisição, por exemplo, de query params
-        email_or_username = request.args.get('email_or_username')
+        data = request.json
+        email = data.get('email')
+        password = data.get('password')
 
-        if not email_or_username:
-            return jsonify({'data': 'Email ou username não fornecido', 'status': 400}), 400
+        # Verifica se os campos de email e senha estão preenchidos
+        if not email or not password:
+            return jsonify({'error': 'Por favor, preencha todos os campos.'}), 400
+
+        user = logins.verify_user(email, password)
         
-        # Agora chama a função correta para buscar o usuário pelo email ou username
-        user = login.get_user_by_email_or_username(email_or_username)
-
         if user:
-            return jsonify(user), 200
+            login_user(user)
+            return jsonify({'message': 'Login bem-sucedido!'}), 200
         else:
-            return jsonify({'data': 'Usuário não encontrado', 'status': 404}), 404
+            return jsonify({'error': 'Email ou senha inválidos.'}), 401
 
     except Exception as e:
-        print(f"Erro ao buscar login: {str(e)}")
-        return jsonify({'data': f'Erro ao buscar login: {str(e)}', 'status': 500}), 500
+        print(f"Erro ao fazer login: {str(e)}")  # Log do erro no console
+        return jsonify({'error': 'Erro ao processar o login. Por favor, tente novamente.'}), 500
+
+# Rota para logout
+@main_bp.route('/logout', methods=['POST'])
+@login_required
+def logout():
+    try:
+        logout_user()
+        return jsonify({'message': 'Logout realizado com sucesso!'}), 200
+    except Exception as e:
+        print(f"Erro ao fazer logout: {str(e)}")  # Log do erro no console
+        return jsonify({'error': 'Erro ao realizar logout. Por favor, tente novamente.'}), 500

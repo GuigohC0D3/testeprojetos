@@ -5,7 +5,7 @@ from psycopg2 import sql
 from .routes import main_bp
 
 def create_app():
-    app = Flask(__name__, template_folder='template')
+    app = Flask(__name__)
     
     cors = CORS(app, resources={r"/*": {"origins": "*"}})
 
