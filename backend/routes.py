@@ -7,6 +7,7 @@ from .entities import members
 from .entities import historicos
 from .entities import books
 from .entities import employee
+from .entities import User  # Ajuste o caminho conforme necessário
 from .entities import logins
 from .connection.config import connect_db 
 import os
@@ -307,7 +308,7 @@ def login():
         if not email or not password:
             return jsonify({'error': 'Por favor, preencha todos os campos.'}), 400
 
-        user = logins.verify_user(email, password)  # Verifique se essa função está correta
+        user = logins.verify_user(email, password)
 
         if user:
             login_user(user)

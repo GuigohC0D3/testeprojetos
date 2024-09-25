@@ -15,16 +15,14 @@ def verify_user(email, password):
     cursor = conn.cursor()
 
     try:
-        # Seleciona o id, username e hash da senha com base no email
         cursor.execute("SELECT id, username, password FROM members WHERE email = %s", (email,))
         user = cursor.fetchone()
         
         print(f"Usuário encontrado: {user}")  # Log do usuário encontrado
 
         if user:
-            # Comparando a senha usando check_password_hash
-            if check_password_hash(user[2], password):  # user[2] é o hash da senha armazenado
-                # Criando uma instância da classe User
+            # Verifica se a senha bate com a do banco de dados
+            if check_password_hash(user[2], password):  # Use check_password_hash se as senhas estão criptografadas
                 user_obj = User(id=user[0], username=user[1], email=email)
                 return user_obj
             else:
@@ -40,6 +38,7 @@ def verify_user(email, password):
     finally:
         cursor.close()
         conn.close()
+
 
 # Função para atualizar a senha no banco de dados
 def update_password(email, plain_password):
