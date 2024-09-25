@@ -304,12 +304,11 @@ def login():
         email = data.get('email')
         password = data.get('password')
 
-        # Verifica se os campos de email e senha estão preenchidos
         if not email or not password:
             return jsonify({'error': 'Por favor, preencha todos os campos.'}), 400
 
-        user = logins.verify_user(email, password)
-        
+        user = logins.verify_user(email, password)  # Verifique se essa função está correta
+
         if user:
             login_user(user)
             return jsonify({'message': 'Login bem-sucedido!'}), 200
@@ -330,3 +329,27 @@ def logout():
     except Exception as e:
         print(f"Erro ao fazer logout: {str(e)}")  # Log do erro no console
         return jsonify({'error': 'Erro ao realizar logout. Por favor, tente novamente.'}), 500
+
+@main_bp.route('/get_user_info', methods=['GET'])
+@login_required
+def get_user_info():
+    if current_user.is_authenticated:
+        return jsonify({
+            'username': current_user.username,
+            'profile_pic': current_user.profile_pic
+        })
+    else:
+        return jsonify({'error': 'Usuário não autenticado'}), 401
+
+@main_bp.route('/home')
+def home():
+    # Verifica se o usuário está autenticado
+    if current_user.is_authenticated:
+        user_data = {
+            'name': current_user.name,
+            'profile_picture': current_user.profile_picture_url  # se tiver uma coluna de foto
+        }
+    else:
+        user_data = None
+
+    return render_template('home.html', user=user_data)

@@ -5,7 +5,6 @@ from flask_login import LoginManager, UserMixin, login_user, login_required, log
 from psycopg2 import sql
 from werkzeug.security import check_password_hash, generate_password_hash
 import logging
-from ..entities import members
 from .user import User  # Ajuste o caminho conforme necessário
 
 logging.basicConfig(level=logging.DEBUG)
@@ -16,14 +15,16 @@ def verify_user(email, password):
     cursor = conn.cursor()
 
     try:
+        # Seleciona o id, username e hash da senha com base no email
         cursor.execute("SELECT id, username, password FROM members WHERE email = %s", (email,))
         user = cursor.fetchone()
         
         print(f"Usuário encontrado: {user}")  # Log do usuário encontrado
 
         if user:
-            # Comparando a senha diretamente
-            if user[2] == password:
+            # Comparando a senha usando check_password_hash
+            if check_password_hash(user[2], password):  # user[2] é o hash da senha armazenado
+                # Criando uma instância da classe User
                 user_obj = User(id=user[0], username=user[1], email=email)
                 return user_obj
             else:
@@ -40,7 +41,7 @@ def verify_user(email, password):
         cursor.close()
         conn.close()
 
-
+# Função para atualizar a senha no banco de dados
 def update_password(email, plain_password):
     hash_password = generate_password_hash(plain_password)  # Gera o hash da senha
     conn = connect_db()  # Função que conecta ao seu banco de dados
@@ -56,5 +57,3 @@ def update_password(email, plain_password):
     finally:
         cursor.close()
         conn.close()
-
-
